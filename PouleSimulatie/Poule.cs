@@ -6,8 +6,8 @@ public class Poule
     private List<Match> _matches;
     private Random _random;
     private bool _returns;
-    private int _totalRondes;
-
+    public int TotalRondes { get; private set; }
+    
     public Poule(List<Club> clubs, bool returns)
     {
         _clubs = clubs;
@@ -26,9 +26,9 @@ public class Poule
         else
             rondes = clubs.Length - 1;
 
-        _totalRondes = rondes;
+        TotalRondes = rondes;
         if (_returns)
-            _totalRondes *= 2;
+            TotalRondes *= 2;
 
         for (var r = 0; r < rondes; r++)
         {

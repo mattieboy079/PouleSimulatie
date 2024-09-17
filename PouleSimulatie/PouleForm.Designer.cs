@@ -103,7 +103,6 @@
 			Controls.Add(BtnExit);
 			Name = "PouleForm";
 			Text = "PouleForm";
-			Load += PouleForm_Load;
 			ResumeLayout(false);
 			PerformLayout();
 		}

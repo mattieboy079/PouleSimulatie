@@ -6,13 +6,32 @@ public partial class PouleForm : Form
 
 	public PouleForm(List<Club> clubs)
 	{
+		DoubleBuffered = true;
 		_poule = new Poule(clubs, false);
-		_poule.Init();
+		Init();
 		InitializeComponent();
 	}
 
-	private void PouleForm_Load(object sender, EventArgs e)
+	private void Init()
 	{
+		_poule.Init();
+		label1.Text = $"1/{_poule.TotalRondes}"; 
+		Draw(1);
+	}
 
+	private void Draw(int round)
+	{
+		DrawStand();
+		DrawPlayRound(round);
+	}
+
+	private void DrawPlayRound(int round)
+	{
+		throw new NotImplementedException();
+	}
+
+	private void DrawStand()
+	{
+		throw new NotImplementedException();
 	}
 }

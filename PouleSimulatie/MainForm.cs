@@ -12,6 +12,14 @@ public partial class MainForm : Form
 	private void MainForm_Load(object sender, EventArgs e)
 	{
 		ListTeams.Items.Clear();
+		var random = new Random();
+		for (var c = 0; c < 4; c++)
+		{
+			var min = c * 25;
+			var max = min + 24;
+			var club = new Club($"Club {c + 1}", random.Next(min, max), random.Next(min, max), random.Next(min, max));
+			ClubCreated(club);
+		}
 		NumAtt.Text = "";
 		NumMid.Text = "";
 		NumDef.Text = "";
@@ -41,13 +49,18 @@ public partial class MainForm : Form
 		var midfield = (int)NumMid.Value;
 		var defence = (int)NumDef.Value;
 		
-		var club = new Club(TxtClubname.Text, attack, midfield, defence);
-		_clubs.Add(club);
-		ListTeams.Items.Add($"{club.Name} - A:{club.Attack} M:{club.Midfield} D:{club.Defence}");
+		var club = new Club(clubName, attack, midfield, defence);
+		ClubCreated(club);
 		TxtClubname.Text = "";
 		NumAtt.Text = "";
 		NumMid.Text = "";
 		NumDef.Text = "";
+	}
+
+	private void ClubCreated(Club club)
+	{
+		_clubs.Add(club);
+		ListTeams.Items.Add($"{club.Name} - A:{club.Attack} M:{club.Midfield} D:{club.Defence}");
 	}
 
 	private void BtnDelete_Click(object sender, EventArgs e) 
