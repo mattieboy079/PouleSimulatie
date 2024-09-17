@@ -31,6 +31,8 @@
 			helpProvider1 = new HelpProvider();
 			ListTeams = new ListBox();
 			BtnAdd = new Button();
+			BtnStart = new Button();
+			BtnSimulateThousand = new Button();
 			TxtClubname = new TextBox();
 			LblClubname = new Label();
 			NumAtt = new NumericUpDown();
@@ -54,24 +56,44 @@
 			ListTeams.Location = new Point(288, 66);
 			ListTeams.Name = "ListTeams";
 			ListTeams.Size = new Size(200, 109);
-			ListTeams.TabIndex = 0;
+			ListTeams.TabIndex = 10;
 			// 
 			// BtnAdd
 			// 
 			BtnAdd.Location = new Point(12, 182);
 			BtnAdd.Name = "BtnAdd";
 			BtnAdd.Size = new Size(241, 23);
-			BtnAdd.TabIndex = 1;
+			BtnAdd.TabIndex = 4;
 			BtnAdd.Text = "Voeg team toe aan poule";
 			BtnAdd.UseVisualStyleBackColor = true;
 			BtnAdd.Click += BtnAdd_Click;
+			// 
+			// BtnStart
+			// 
+			BtnStart.Location = new Point(12, 212);
+			BtnStart.Name = "BtnStart";
+			BtnStart.Size = new Size(241, 23);
+			BtnStart.TabIndex = 5;
+			BtnStart.Text = "Start poule";
+			BtnStart.UseVisualStyleBackColor = true;
+			BtnStart.Click += BtnStart_Click;
+			// 
+			// BtnSimulateThousand
+			// 
+			BtnSimulateThousand.Location = new Point(12, 242);
+			BtnSimulateThousand.Name = "BtnSimulateThousand";
+			BtnSimulateThousand.Size = new Size(241, 23);
+			BtnSimulateThousand.TabIndex = 6;
+			BtnSimulateThousand.Text = "Simuleer 1000x";
+			BtnSimulateThousand.UseVisualStyleBackColor = true;
+			BtnSimulateThousand.Click += BtnSimulateThousand_Click;
 			// 
 			// TxtClubname
 			// 
 			TxtClubname.Location = new Point(106, 29);
 			TxtClubname.Name = "TxtClubname";
 			TxtClubname.Size = new Size(147, 23);
-			TxtClubname.TabIndex = 2;
+			TxtClubname.TabIndex = 0;
 			// 
 			// LblClubname
 			// 
@@ -79,7 +101,7 @@
 			LblClubname.Location = new Point(12, 32);
 			LblClubname.Name = "LblClubname";
 			LblClubname.Size = new Size(62, 15);
-			LblClubname.TabIndex = 3;
+			LblClubname.TabIndex = 21;
 			LblClubname.Text = "Clubnaam";
 			// 
 			// NumAtt
@@ -88,7 +110,7 @@
 			NumAtt.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
 			NumAtt.Name = "NumAtt";
 			NumAtt.Size = new Size(41, 23);
-			NumAtt.TabIndex = 4;
+			NumAtt.TabIndex = 1;
 			NumAtt.Value = new decimal(new int[] { 100, 0, 0, 0 });
 			// 
 			// LblAtt
@@ -97,7 +119,7 @@
 			LblAtt.Location = new Point(12, 97);
 			LblAtt.Name = "LblAtt";
 			LblAtt.Size = new Size(28, 15);
-			LblAtt.TabIndex = 5;
+			LblAtt.TabIndex = 25;
 			LblAtt.Text = "Aan";
 			// 
 			// LblRatings
@@ -106,7 +128,7 @@
 			LblRatings.Location = new Point(12, 66);
 			LblRatings.Name = "LblRatings";
 			LblRatings.Size = new Size(86, 15);
-			LblRatings.TabIndex = 6;
+			LblRatings.TabIndex = 26;
 			LblRatings.Text = "Ratings (1-100)";
 			// 
 			// LblMid
@@ -115,7 +137,7 @@
 			LblMid.Location = new Point(12, 126);
 			LblMid.Name = "LblMid";
 			LblMid.Size = new Size(28, 15);
-			LblMid.TabIndex = 8;
+			LblMid.TabIndex = 28;
 			LblMid.Text = "Mid";
 			// 
 			// NumMid
@@ -124,7 +146,7 @@
 			NumMid.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
 			NumMid.Name = "NumMid";
 			NumMid.Size = new Size(41, 23);
-			NumMid.TabIndex = 7;
+			NumMid.TabIndex = 2;
 			NumMid.Value = new decimal(new int[] { 100, 0, 0, 0 });
 			// 
 			// LblDef
@@ -133,7 +155,7 @@
 			LblDef.Location = new Point(12, 155);
 			LblDef.Name = "LblDef";
 			LblDef.Size = new Size(23, 15);
-			LblDef.TabIndex = 10;
+			LblDef.TabIndex = 30;
 			LblDef.Text = "Ver";
 			// 
 			// NumDef
@@ -142,7 +164,7 @@
 			NumDef.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
 			NumDef.Name = "NumDef";
 			NumDef.Size = new Size(41, 23);
-			NumDef.TabIndex = 9;
+			NumDef.TabIndex = 3;
 			NumDef.Value = new decimal(new int[] { 100, 0, 0, 0 });
 			// 
 			// LblTeams
@@ -151,7 +173,7 @@
 			LblTeams.Location = new Point(288, 32);
 			LblTeams.Name = "LblTeams";
 			LblTeams.Size = new Size(40, 15);
-			LblTeams.TabIndex = 11;
+			LblTeams.TabIndex = 20;
 			LblTeams.Text = "Teams";
 			// 
 			// BtnDelete
@@ -159,7 +181,7 @@
 			BtnDelete.Location = new Point(288, 182);
 			BtnDelete.Name = "BtnDelete";
 			BtnDelete.Size = new Size(120, 23);
-			BtnDelete.TabIndex = 12;
+			BtnDelete.TabIndex = 11;
 			BtnDelete.Text = "Verwijder team";
 			BtnDelete.UseVisualStyleBackColor = true;
 			BtnDelete.Click += BtnDelete_Click;
@@ -181,6 +203,8 @@
 			Controls.Add(LblClubname);
 			Controls.Add(TxtClubname);
 			Controls.Add(BtnAdd);
+			Controls.Add(BtnStart);
+			Controls.Add(BtnSimulateThousand);
 			Controls.Add(ListTeams);
 			Name = "MainForm";
 			Text = "MainForm";
@@ -197,6 +221,8 @@
 		private HelpProvider helpProvider1;
 		private ListBox ListTeams;
 		private Button BtnAdd;
+		private Button BtnStart;
+		private Button BtnSimulateThousand;
 		private TextBox TxtClubname;
 		private Label LblClubname;
 		private NumericUpDown NumAtt;

@@ -68,4 +68,25 @@ public partial class MainForm : Form
 			MessageBox.Show("Geen teams geselecteerd om te verwijderen.");
 		}
 	}
+	
+	private void BtnStart_Click(object sender, EventArgs e)
+	{
+		if (_clubs.Count < 2)
+		{
+			MessageBox.Show("Voeg minimaal 2 teams toe.");
+			return;
+		}
+		
+		var form = new PouleForm(_clubs);
+		form.Show();
+	}
+	
+	private void BtnSimulateThousand_Click(object sender, EventArgs e)
+	{
+		if (_clubs.Count < 2)
+		{
+			MessageBox.Show("Voeg minimaal 2 teams toe.");
+			return;
+		}
+	}
 }
