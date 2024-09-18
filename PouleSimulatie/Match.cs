@@ -2,15 +2,16 @@ namespace PouleSimulatie;
 
 public class Match
 {
-    private readonly int _ronde;
+    public readonly int Round;
     public Club HomeClub { get; }
     public Club AwayClub { get; }
     public int HomeGoals { get; private set; }
     public int AwayGoals { get; private set; }
-    
+    public bool IsPlayed { get; set; }
+
     public Match(Club homeClub, Club awayClub, int ronde)
     {
-        _ronde = ronde;
+        Round = ronde;
         HomeClub = homeClub;
         AwayClub = awayClub;
     }

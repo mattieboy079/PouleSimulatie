@@ -118,4 +118,9 @@ public class Poule
     {
         CreateMatches();
     }
+
+    public List<Match> GetMatches(int round)
+    {
+        return _matches.Where(m => m.Round == round).ToList();
+    }
 }

@@ -29,11 +29,11 @@
 		private void InitializeComponent()
 		{
 			BtnExit = new Button();
-			button1 = new Button();
-			button2 = new Button();
-			button3 = new Button();
-			button4 = new Button();
-			label1 = new Label();
+			BtnPlayOne = new Button();
+			BtnSimulateAll = new Button();
+			BtnPrevious = new Button();
+			BtnNext = new Button();
+			LblPlayround = new Label();
 			SuspendLayout();
 			// 
 			// BtnExit
@@ -44,65 +44,71 @@
 			BtnExit.TabIndex = 0;
 			BtnExit.Text = "Sluiten";
 			BtnExit.UseVisualStyleBackColor = true;
+			BtnExit.Click += BtnExit_Click;
 			// 
-			// button1
+			// BtnPlayOne
 			// 
-			button1.Location = new Point(12, 12);
-			button1.Name = "button1";
-			button1.Size = new Size(132, 23);
-			button1.TabIndex = 1;
-			button1.Text = "Speel 1 wedstrijd";
-			button1.UseVisualStyleBackColor = true;
+			BtnPlayOne.Location = new Point(12, 12);
+			BtnPlayOne.Name = "BtnPlayOne";
+			BtnPlayOne.Size = new Size(132, 23);
+			BtnPlayOne.TabIndex = 1;
+			BtnPlayOne.Text = "Speel 1 wedstrijd";
+			BtnPlayOne.UseVisualStyleBackColor = true;
+			BtnPlayOne.Click += BtnPlayOne_Click;
 			// 
-			// button2
+			// BtnSimulateAll
 			// 
-			button2.Location = new Point(12, 41);
-			button2.Name = "button2";
-			button2.Size = new Size(132, 23);
-			button2.TabIndex = 2;
-			button2.Text = "Simuleer alles";
-			button2.UseVisualStyleBackColor = true;
+			BtnSimulateAll.Location = new Point(12, 41);
+			BtnSimulateAll.Name = "BtnSimulateAll";
+			BtnSimulateAll.Size = new Size(132, 23);
+			BtnSimulateAll.TabIndex = 2;
+			BtnSimulateAll.Text = "Simuleer alles";
+			BtnSimulateAll.UseVisualStyleBackColor = true;
+			BtnSimulateAll.Click += BtnSimulateAll_Click;
 			// 
-			// button3
+			// BtnPrevious
 			// 
-			button3.Location = new Point(12, 70);
-			button3.Name = "button3";
-			button3.Size = new Size(132, 23);
-			button3.TabIndex = 3;
-			button3.Text = "Vorige speelronde";
-			button3.UseVisualStyleBackColor = true;
+			BtnPrevious.Location = new Point(12, 70);
+			BtnPrevious.Name = "BtnPrevious";
+			BtnPrevious.Size = new Size(132, 23);
+			BtnPrevious.TabIndex = 3;
+			BtnPrevious.Text = "Vorige speelronde";
+			BtnPrevious.UseVisualStyleBackColor = true;
+			BtnPrevious.Click += BtnPrevious_Click;
 			// 
-			// button4
+			// BtnNext
 			// 
-			button4.Location = new Point(236, 70);
-			button4.Name = "button4";
-			button4.Size = new Size(132, 23);
-			button4.TabIndex = 4;
-			button4.Text = "Volgende speelronde";
-			button4.UseVisualStyleBackColor = true;
+			BtnNext.Location = new Point(236, 70);
+			BtnNext.Name = "BtnNext";
+			BtnNext.Size = new Size(132, 23);
+			BtnNext.TabIndex = 4;
+			BtnNext.Text = "Volgende speelronde";
+			BtnNext.UseVisualStyleBackColor = true;
+			BtnNext.Click += BtnNext_Click;
 			// 
-			// label1
+			// LblPlayround
 			// 
-			label1.AutoSize = true;
-			label1.Location = new Point(170, 74);
-			label1.Name = "label1";
-			label1.Size = new Size(36, 15);
-			label1.TabIndex = 5;
-			label1.Text = "12/12";
+			LblPlayround.AutoSize = true;
+			LblPlayround.Location = new Point(170, 74);
+			LblPlayround.Name = "LblPlayround";
+			LblPlayround.Size = new Size(36, 15);
+			LblPlayround.TabIndex = 5;
+			LblPlayround.Text = "12/12";
 			// 
 			// PouleForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(800, 450);
-			Controls.Add(label1);
-			Controls.Add(button4);
-			Controls.Add(button3);
-			Controls.Add(button2);
-			Controls.Add(button1);
+			Controls.Add(LblPlayround);
+			Controls.Add(BtnNext);
+			Controls.Add(BtnPrevious);
+			Controls.Add(BtnSimulateAll);
+			Controls.Add(BtnPlayOne);
 			Controls.Add(BtnExit);
 			Name = "PouleForm";
 			Text = "PouleForm";
+			Paint += Draw;
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -110,10 +116,10 @@
 		#endregion
 
 		private Button BtnExit;
-		private Button button1;
-		private Button button2;
-		private Button button3;
-		private Button button4;
-		private Label label1;
+		private Button BtnPlayOne;
+		private Button BtnSimulateAll;
+		private Button BtnPrevious;
+		private Button BtnNext;
+		private Label LblPlayround;
 	}
 }
