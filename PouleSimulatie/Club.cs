@@ -14,4 +14,19 @@ public class Club
         Midfield = midfield;
         Defence = defence;
     }
+
+    public int GetRating()
+    {
+        return (Attack + Midfield + Defence) / 3;
+    }
+
+    public double GetAttackRating()
+    {
+        return (double)(2 * Attack + Midfield) / 3;
+    }
+
+    public double GetDefendRating()
+    {
+        return (double)(2 * Defence + Midfield) / 3;
+    }
 }

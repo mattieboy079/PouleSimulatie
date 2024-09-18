@@ -2,17 +2,19 @@ namespace PouleSimulatie;
 
 public class Poule
 {
-    private readonly List<Club> _clubs;
-    private List<Match> _matches;
-    private Random _random;
-    private bool _returns;
+    private List<Club> _clubs { get; }
+    private List<Match> _matches { get; set; }
+    private List<StandRow> _stand { get; set; }
+    private Random _random { get; }
+    private bool _returns { get; }
     public int TotalRondes { get; private set; }
     
-    public Poule(List<Club> clubs, bool returns)
+    public Poule(List<Club> clubs, bool returns, Random random)
     {
         _clubs = clubs;
+        _stand = _clubs.Select(c => new StandRow(c)).ToList();
         _returns = returns;
-        _random = new Random();
+        _random = random;
         _matches = new List<Match>();
     }
 
@@ -112,6 +114,8 @@ public class Poule
 
             clubs = newClubs;
         }
+
+        _matches = _matches.OrderBy(m => m.Round).ToList();
     }
 
     public void Init()
@@ -122,5 +126,98 @@ public class Poule
     public List<Match> GetMatches(int round)
     {
         return _matches.Where(m => m.Round == round).ToList();
+    }
+
+    public List<StandRow> GetOrderedStand()
+    {
+        _stand = _stand
+            .OrderByDescending(s => s.GetPoints())
+            .ThenByDescending(s => s.GetGoalDiff())
+            .ThenByDescending(s => s.GoalsFor)
+            .ThenByDescending(s => s.Club, Comparer<Club>.Create(GetHeadToHeadResult))
+            .ToList();
+        return _stand;
+    }
+
+    private int GetHeadToHeadResult(Club club1, Club club2)
+    {
+        var matchesBetweenClubs = _matches.Where(m => 
+            (m.HomeClub == club1 && m.AwayClub == club2) || 
+            (m.HomeClub == club2 && m.AwayClub == club1)).ToList();
+
+        var club1Points = 0;
+        var club2Points = 0;
+        var club1Goals = 0;
+        var club2Goals = 0;
+
+        foreach (var match in matchesBetweenClubs)
+        {
+            if (match.HomeClub == club1)
+            {
+                club1Goals += match.HomeGoals;
+                club2Goals += match.AwayGoals;
+                if (match.HomeGoals > match.AwayGoals)
+                    club1Points += 3;
+                else if (match.HomeGoals < match.AwayGoals)
+                    club2Points += 3;
+                else
+                {
+                    club1Points += 1;
+                    club2Points += 1;
+                }
+            }
+            else
+            {
+                club1Goals += match.AwayGoals;
+                club2Goals += match.HomeGoals;
+                if (match.HomeGoals > match.AwayGoals)
+                    club2Points += 3;
+                else if (match.HomeGoals < match.AwayGoals)
+                    club1Points += 3;
+                else
+                {
+                    club1Points += 1;
+                    club2Points += 1;
+                }
+            }
+        }
+
+        if (club1Points == club2Points)
+            return club1Goals - club2Goals;
+        
+        return club1Points - club2Points;
+    }
+    
+    public void SimulateNextMatch()
+    {
+        var nextMatch = _matches.FirstOrDefault(m => !m.IsPlayed);
+        if (nextMatch == null)
+            return;
+        
+        nextMatch.Simulate(_random);
+        UpdateStand(nextMatch);
+    }
+
+    public void SimulateAllMatches()
+    {
+        Parallel.ForEach(_matches.Where(m => !m.IsPlayed), match =>
+        {
+            match.Simulate(_random);
+            UpdateStand(match);
+        });
+    }
+
+    private void UpdateStand(Match match)
+    {
+        var homeStand = _stand.First(s => s.Club == match.HomeClub);
+        var awayStand = _stand.First(s => s.Club == match.AwayClub);
+        
+        homeStand.MatchPlayed(match.HomeGoals, match.AwayGoals);
+        awayStand.MatchPlayed(match.AwayGoals, match.HomeGoals);
+    }
+
+    public int? GetNextMatchRound()
+    {
+        return _matches.FirstOrDefault(m => !m.IsPlayed)?.Round;
     }
 }

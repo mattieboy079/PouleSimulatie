@@ -38,7 +38,7 @@
 			// 
 			// BtnExit
 			// 
-			BtnExit.Location = new Point(656, 12);
+			BtnExit.Location = new Point(1056, 12);
 			BtnExit.Name = "BtnExit";
 			BtnExit.Size = new Size(132, 23);
 			BtnExit.TabIndex = 0;
@@ -99,7 +99,7 @@
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new Size(800, 450);
+			ClientSize = new Size(1200, 450);
 			Controls.Add(LblPlayround);
 			Controls.Add(BtnNext);
 			Controls.Add(BtnPrevious);
@@ -109,6 +109,7 @@
 			Name = "PouleForm";
 			Text = "PouleForm";
 			Paint += Draw;
+			SizeChanged += RefreshScreen;
 			ResumeLayout(false);
 			PerformLayout();
 		}

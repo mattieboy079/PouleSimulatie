@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace PouleSimulatie;
 
 public partial class MainForm : Form
@@ -90,16 +92,93 @@ public partial class MainForm : Form
 			return;
 		}
 		
-		var form = new PouleForm(_clubs);
+		var form = new PouleForm(_clubs, CheckReturns.Checked);
 		form.Show();
 	}
 	
 	private void BtnSimulateThousand_Click(object sender, EventArgs e)
 	{
+		var startTime = DateTime.Now;
+		
 		if (_clubs.Count < 2)
 		{
 			MessageBox.Show("Voeg minimaal 2 teams toe.");
 			return;
 		}
+
+		var returns = CheckReturns.Checked;
+		
+		var simulations = 1000000;
+		var random = new Random();
+		var tasks = new List<Task>();
+
+		var simulationResult = new MassSimulationResult(_clubs);
+
+		for (int p = 0; p < simulations; p++)
+		{
+			tasks.Add(Task.Run(() =>
+			{
+				Poule poule = new(_clubs, returns, random);
+				poule.Init();
+				poule.SimulateAllMatches();
+				simulationResult.AddResults(poule);
+			}));
+		}
+		
+		Task.WhenAll(tasks).GetAwaiter().GetResult();
+
+		var timeTaken = Math.Round((DateTime.Now - startTime).TotalSeconds, 3);
+		
+		MessageBox.Show($"Time: {timeTaken}\n{simulationResult.GetResults(simulations)}");
+	}
+}
+
+public class MassSimulationResult
+{
+	public List<ClubResult> ClubResults { get; set; }
+
+	public MassSimulationResult(List<Club> clubs)
+	{
+		ClubResults = clubs.Select(c => new ClubResult(c, clubs.Count)).ToList();
+	}
+
+	public void AddResults(Poule poule)
+	{
+		var orderedStand = poule.GetOrderedStand();
+		for(int i = 0; i < orderedStand.Count; i++)
+			ClubResults.First(c => c.ClubName == orderedStand[i].Club.Name).AddResult(i + 1, orderedStand[i].GetPoints());
+	}
+
+	public string GetResults(int simulations)
+	{
+		return string.Join("\n", ClubResults.Select(c => c.GetResult(simulations)));
+	}
+}
+
+public class ClubResult
+{
+	public string ClubName;
+	public readonly Dictionary<int, int> Results;
+	public int TotalPoints;
+	
+	public ClubResult(Club club, int clubsCount)
+	{
+		ClubName = club.Name;
+		Results = new();
+		for (int i = 1; i <= clubsCount; i++)
+		{
+			Results.Add(i, 0);
+		}
+	}
+	
+	public void AddResult(int position, int points)
+	{
+		Results[position]++;
+		TotalPoints += points;
+	}
+
+	public string GetResult(int simulations)
+	{
+		return $"{ClubName} - {string.Join(", ", Results.Select(r => $"{r.Key}: {r.Value}"))} - {Math.Round((double)TotalPoints / simulations, 2)} pts avg";
 	}
 }

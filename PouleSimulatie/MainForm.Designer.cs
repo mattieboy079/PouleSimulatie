@@ -44,6 +44,7 @@
 			NumDef = new NumericUpDown();
 			LblTeams = new Label();
 			BtnDelete = new Button();
+			CheckReturns = new CheckBox();
 			((System.ComponentModel.ISupportInitialize)NumAtt).BeginInit();
 			((System.ComponentModel.ISupportInitialize)NumMid).BeginInit();
 			((System.ComponentModel.ISupportInitialize)NumDef).BeginInit();
@@ -70,7 +71,7 @@
 			// 
 			// BtnStart
 			// 
-			BtnStart.Location = new Point(12, 212);
+			BtnStart.Location = new Point(12, 236);
 			BtnStart.Name = "BtnStart";
 			BtnStart.Size = new Size(241, 23);
 			BtnStart.TabIndex = 5;
@@ -80,11 +81,11 @@
 			// 
 			// BtnSimulateThousand
 			// 
-			BtnSimulateThousand.Location = new Point(12, 242);
+			BtnSimulateThousand.Location = new Point(12, 266);
 			BtnSimulateThousand.Name = "BtnSimulateThousand";
 			BtnSimulateThousand.Size = new Size(241, 23);
 			BtnSimulateThousand.TabIndex = 6;
-			BtnSimulateThousand.Text = "Simuleer 1000x";
+			BtnSimulateThousand.Text = "Simuleer 1.000.000x";
 			BtnSimulateThousand.UseVisualStyleBackColor = true;
 			BtnSimulateThousand.Click += BtnSimulateThousand_Click;
 			// 
@@ -186,11 +187,22 @@
 			BtnDelete.UseVisualStyleBackColor = true;
 			BtnDelete.Click += BtnDelete_Click;
 			// 
+			// CheckReturns
+			// 
+			CheckReturns.AutoSize = true;
+			CheckReturns.Location = new Point(15, 211);
+			CheckReturns.Name = "CheckReturns";
+			CheckReturns.Size = new Size(66, 19);
+			CheckReturns.TabIndex = 31;
+			CheckReturns.Text = "Returns";
+			CheckReturns.UseVisualStyleBackColor = true;
+			// 
 			// MainForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(800, 450);
+			Controls.Add(CheckReturns);
 			Controls.Add(BtnDelete);
 			Controls.Add(LblTeams);
 			Controls.Add(LblDef);
@@ -234,5 +246,6 @@
 		private NumericUpDown NumDef;
 		private Label LblTeams;
 		private Button BtnDelete;
+		private CheckBox CheckReturns;
 	}
 }
