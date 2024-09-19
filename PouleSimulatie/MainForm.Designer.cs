@@ -45,9 +45,15 @@
 			LblTeams = new Label();
 			BtnDelete = new Button();
 			CheckReturns = new CheckBox();
+			NumAdvancingTeams = new NumericUpDown();
+			LblAdvancingTeams = new Label();
+			label1 = new Label();
+			label2 = new Label();
+			label3 = new Label();
 			((System.ComponentModel.ISupportInitialize)NumAtt).BeginInit();
 			((System.ComponentModel.ISupportInitialize)NumMid).BeginInit();
 			((System.ComponentModel.ISupportInitialize)NumDef).BeginInit();
+			((System.ComponentModel.ISupportInitialize)NumAdvancingTeams).BeginInit();
 			SuspendLayout();
 			// 
 			// ListTeams
@@ -71,7 +77,7 @@
 			// 
 			// BtnStart
 			// 
-			BtnStart.Location = new Point(12, 236);
+			BtnStart.Location = new Point(12, 240);
 			BtnStart.Name = "BtnStart";
 			BtnStart.Size = new Size(241, 23);
 			BtnStart.TabIndex = 5;
@@ -81,7 +87,7 @@
 			// 
 			// BtnSimulateThousand
 			// 
-			BtnSimulateThousand.Location = new Point(12, 266);
+			BtnSimulateThousand.Location = new Point(12, 270);
 			BtnSimulateThousand.Name = "BtnSimulateThousand";
 			BtnSimulateThousand.Size = new Size(241, 23);
 			BtnSimulateThousand.TabIndex = 6;
@@ -107,7 +113,7 @@
 			// 
 			// NumAtt
 			// 
-			NumAtt.Location = new Point(106, 95);
+			NumAtt.Location = new Point(57, 95);
 			NumAtt.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
 			NumAtt.Name = "NumAtt";
 			NumAtt.Size = new Size(41, 23);
@@ -119,9 +125,9 @@
 			LblAtt.AutoSize = true;
 			LblAtt.Location = new Point(12, 97);
 			LblAtt.Name = "LblAtt";
-			LblAtt.Size = new Size(28, 15);
+			LblAtt.Size = new Size(23, 15);
 			LblAtt.TabIndex = 25;
-			LblAtt.Text = "Aan";
+			LblAtt.Text = "Att";
 			// 
 			// LblRatings
 			// 
@@ -143,7 +149,7 @@
 			// 
 			// NumMid
 			// 
-			NumMid.Location = new Point(106, 124);
+			NumMid.Location = new Point(57, 124);
 			NumMid.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
 			NumMid.Name = "NumMid";
 			NumMid.Size = new Size(41, 23);
@@ -155,13 +161,13 @@
 			LblDef.AutoSize = true;
 			LblDef.Location = new Point(12, 155);
 			LblDef.Name = "LblDef";
-			LblDef.Size = new Size(23, 15);
+			LblDef.Size = new Size(25, 15);
 			LblDef.TabIndex = 30;
-			LblDef.Text = "Ver";
+			LblDef.Text = "Def";
 			// 
 			// NumDef
 			// 
-			NumDef.Location = new Point(106, 153);
+			NumDef.Location = new Point(57, 153);
 			NumDef.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
 			NumDef.Name = "NumDef";
 			NumDef.Size = new Size(41, 23);
@@ -190,18 +196,68 @@
 			// CheckReturns
 			// 
 			CheckReturns.AutoSize = true;
-			CheckReturns.Location = new Point(15, 211);
+			CheckReturns.Location = new Point(12, 215);
 			CheckReturns.Name = "CheckReturns";
 			CheckReturns.Size = new Size(66, 19);
 			CheckReturns.TabIndex = 31;
 			CheckReturns.Text = "Returns";
 			CheckReturns.UseVisualStyleBackColor = true;
 			// 
+			// NumAdvancingTeams
+			// 
+			NumAdvancingTeams.Location = new Point(106, 211);
+			NumAdvancingTeams.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+			NumAdvancingTeams.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+			NumAdvancingTeams.Name = "NumAdvancingTeams";
+			NumAdvancingTeams.Size = new Size(43, 23);
+			NumAdvancingTeams.TabIndex = 32;
+			NumAdvancingTeams.Value = new decimal(new int[] { 1, 0, 0, 0 });
+			// 
+			// LblAdvancingTeams
+			// 
+			LblAdvancingTeams.AutoSize = true;
+			LblAdvancingTeams.Location = new Point(155, 216);
+			LblAdvancingTeams.Name = "LblAdvancingTeams";
+			LblAdvancingTeams.Size = new Size(98, 15);
+			LblAdvancingTeams.TabIndex = 33;
+			LblAdvancingTeams.Text = "Teams advancing";
+			// 
+			// label1
+			// 
+			label1.AutoSize = true;
+			label1.Location = new Point(111, 97);
+			label1.Name = "label1";
+			label1.Size = new Size(122, 15);
+			label1.TabIndex = 34;
+			label1.Text = "Increase score chance";
+			// 
+			// label2
+			// 
+			label2.Location = new Point(111, 149);
+			label2.Name = "label2";
+			label2.Size = new Size(132, 34);
+			label2.TabIndex = 35;
+			label2.Text = "Decrease opponent score chance";
+			// 
+			// label3
+			// 
+			label3.AutoSize = true;
+			label3.Location = new Point(111, 126);
+			label3.Name = "label3";
+			label3.Size = new Size(110, 15);
+			label3.TabIndex = 36;
+			label3.Text = "Increase att and def";
+			// 
 			// MainForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(800, 450);
+			Controls.Add(label3);
+			Controls.Add(label2);
+			Controls.Add(label1);
+			Controls.Add(LblAdvancingTeams);
+			Controls.Add(NumAdvancingTeams);
 			Controls.Add(CheckReturns);
 			Controls.Add(BtnDelete);
 			Controls.Add(LblTeams);
@@ -224,6 +280,7 @@
 			((System.ComponentModel.ISupportInitialize)NumAtt).EndInit();
 			((System.ComponentModel.ISupportInitialize)NumMid).EndInit();
 			((System.ComponentModel.ISupportInitialize)NumDef).EndInit();
+			((System.ComponentModel.ISupportInitialize)NumAdvancingTeams).EndInit();
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -247,5 +304,10 @@
 		private Label LblTeams;
 		private Button BtnDelete;
 		private CheckBox CheckReturns;
+		private NumericUpDown NumAdvancingTeams;
+		private Label LblAdvancingTeams;
+		private Label label1;
+		private Label label2;
+		private Label label3;
 	}
 }

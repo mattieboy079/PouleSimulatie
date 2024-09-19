@@ -6,6 +6,7 @@ public class Club
     public int Attack { get; }
     public int Midfield { get; }
     public int Defence { get; }
+    public int? PointsToAdd { get; set; }
 
     public Club(string name, int attack, int midfield, int defence)
     {

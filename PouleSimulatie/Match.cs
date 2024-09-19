@@ -24,10 +24,10 @@ public class Match
         var awayChanceModifier = AwayClub.GetAttackRating() / HomeClub.GetDefendRating();
         var awayScoreChance = GetScoreChance(baseScoreChance, awayChanceModifier);
         
-        while(random.NextDouble() < homeScoreChance)
+        while(random.NextDouble() < homeScoreChance / Math.Sqrt(HomeGoals + 1))
             HomeGoals++;
         
-        while(random.NextDouble() < awayScoreChance)
+        while(random.NextDouble() < awayScoreChance / Math.Sqrt(AwayGoals + 1))
             AwayGoals++;
 
         IsPlayed = true;
@@ -42,9 +42,8 @@ public class Match
         else
             chance = baseChance * modifier;
 
-        var minimumChance = 0.2;
-        var maximumChance = 0.8;
-        //Make sure the chance will be between 20% and 70% 
+        var minimumChance = 0.4;
+        var maximumChance = 1; 
         return chance * (maximumChance - minimumChance) + minimumChance;
     }
 }

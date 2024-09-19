@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace PouleSimulatie;
 
 public partial class MainForm : Form
@@ -25,6 +23,7 @@ public partial class MainForm : Form
 		NumAtt.Text = "";
 		NumMid.Text = "";
 		NumDef.Text = "";
+		NumAdvancingTeams.Value = 2;
 	}
 	
 	private void BtnAdd_Click(object sender, EventArgs e)
@@ -63,6 +62,8 @@ public partial class MainForm : Form
 	{
 		_clubs.Add(club);
 		ListTeams.Items.Add($"{club.Name} - A:{club.Attack} M:{club.Midfield} D:{club.Defence}");
+		if(ListTeams.Items.Count > 1)
+			NumAdvancingTeams.Maximum = ListTeams.Items.Count - 1;
 	}
 
 	private void BtnDelete_Click(object sender, EventArgs e) 
@@ -72,10 +73,16 @@ public partial class MainForm : Form
 			var rowsToRemove = ListTeams.SelectedItems.Cast<string>().ToList();
 			foreach (var row in rowsToRemove)
 			{
-				var clubName = row.Split(' ').First();
+				var clubName = row.Split(" - ").First();
 				var club = _clubs.First(c => c.Name == clubName);
 				_clubs.Remove(club);
 				ListTeams.Items.Remove(row);
+				if (ListTeams.Items.Count > 1)
+				{
+					NumAdvancingTeams.Maximum--;
+					if (NumAdvancingTeams.Value > NumAdvancingTeams.Maximum)
+						NumAdvancingTeams.Value = NumAdvancingTeams.Maximum;
+				}
 			}
 		}
 		else

@@ -2,17 +2,17 @@ namespace PouleSimulatie;
 
 public class Poule
 {
-    private List<Club> _clubs { get; }
+    public List<Club> Clubs { get; }
     private List<Match> _matches { get; set; }
-    private List<StandRow> _stand { get; set; }
+    public List<StandRow> Stand { get; private set; }
     private Random _random { get; }
     private bool _returns { get; }
     public int TotalRondes { get; private set; }
     
     public Poule(List<Club> clubs, bool returns, Random random)
     {
-        _clubs = clubs;
-        _stand = _clubs.Select(c => new StandRow(c)).ToList();
+        Clubs = clubs;
+        Stand = Clubs.Select(c => new StandRow(c)).ToList();
         _returns = returns;
         _random = random;
         _matches = new List<Match>();
@@ -20,7 +20,7 @@ public class Poule
 
     private void CreateMatches()
     {
-        var clubs = _clubs.OrderBy(c => _random.Next()).ToArray();
+        var clubs = Clubs.OrderBy(c => _random.Next()).ToArray();
         int rondes;
 
         if (clubs.Length % 2 == 1)
@@ -130,13 +130,13 @@ public class Poule
 
     public List<StandRow> GetOrderedStand()
     {
-        _stand = _stand
+        Stand = Stand
             .OrderByDescending(s => s.GetPoints())
             .ThenByDescending(s => s.GetGoalDiff())
             .ThenByDescending(s => s.GoalsFor)
             .ThenByDescending(s => s.Club, Comparer<Club>.Create(GetHeadToHeadResult))
             .ToList();
-        return _stand;
+        return Stand;
     }
 
     private int GetHeadToHeadResult(Club club1, Club club2)
@@ -194,23 +194,24 @@ public class Poule
         if (nextMatch == null)
             return;
         
-        nextMatch.Simulate(_random);
-        UpdateStand(nextMatch);
+        SimulateMatch(nextMatch);
     }
 
     public void SimulateAllMatches()
     {
-        Parallel.ForEach(_matches.Where(m => !m.IsPlayed), match =>
-        {
-            match.Simulate(_random);
-            UpdateStand(match);
-        });
+        Parallel.ForEach(_matches.Where(m => !m.IsPlayed), SimulateMatch);
     }
 
+    private void SimulateMatch(Match match)
+    {
+        match.Simulate(_random);
+        UpdateStand(match);
+    }
+    
     private void UpdateStand(Match match)
     {
-        var homeStand = _stand.First(s => s.Club == match.HomeClub);
-        var awayStand = _stand.First(s => s.Club == match.AwayClub);
+        var homeStand = Stand.First(s => s.Club == match.HomeClub);
+        var awayStand = Stand.First(s => s.Club == match.AwayClub);
         
         homeStand.MatchPlayed(match.HomeGoals, match.AwayGoals);
         awayStand.MatchPlayed(match.AwayGoals, match.HomeGoals);
