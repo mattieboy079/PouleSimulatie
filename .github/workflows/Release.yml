@@ -71,7 +71,6 @@ jobs:
           release_name: ${{steps.tag.outputs.tag}}
           draft: false
           prerelease: false
-          body_path: ./Changelog.md
           
       - name: Zip the buildfolder
         uses: TonyBogdanov/zip@1.0
