@@ -35,7 +35,7 @@ public class Match
 
     private double GetScoreChance(double baseChance, double modifier)
     {
-        double chance = 0;
+        double chance;
         
         if (modifier > 1)
             chance = 1 - (1 - baseChance) / modifier;

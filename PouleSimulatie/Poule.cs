@@ -20,7 +20,7 @@ public class Poule
 
     private void CreateMatches()
     {
-        var clubs = Clubs.OrderBy(c => _random.Next()).ToArray();
+        var clubs = Clubs.OrderBy(_ => _random.Next()).ToArray();
         int rondes;
 
         if (clubs.Length % 2 == 1)
