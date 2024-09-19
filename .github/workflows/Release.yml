@@ -42,7 +42,7 @@ jobs:
         run: msbuild PouleSimulatie.sln /p:Configuration=Release
         
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4.x
+        uses: actions/upload-artifact@v3.x
         with:
           name: BuildArtifact
           path: PouleSimulatie/bin/Release
