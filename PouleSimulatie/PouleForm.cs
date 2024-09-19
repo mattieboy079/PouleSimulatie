@@ -82,6 +82,7 @@ public partial class PouleForm : Form
 
 	private void DrawStand(Graphics graphics)
 	{
+		//TODO: Create a table class to do all the drawing for the table
 		var startHeight = 110;
 		var font = new Font("Arial", 16);
 		var brush = new SolidBrush(Color.Black);
@@ -139,11 +140,14 @@ public partial class PouleForm : Form
 		var addValueYAdjust = baseFontSize / 2 * (_addValueSizeFactor - 1);
 		var pointsYAdjust = baseFontSize / 2 * (_pointsSizeFactor - 1);
 
-		var regularFont = new Font("Arial", (float)baseFontSize, FontStyle.Regular);
+		var font = new Font("Arial", (float)baseFontSize, FontStyle.Regular);
 		var addPtsFont = new Font("Arial", (float)(baseFontSize * _addValueSizeFactor), FontStyle.Regular);
 
+		var fontSize = baseFontSize;
+		if (row.PointsAdded)
+			fontSize *= _pointsSizeFactor;
 		
-		var font = new Font("Arial", 16);
+		var adjustedFont = new Font("Arial", (float)fontSize, FontStyle.Regular);
 		var brush = new SolidBrush(Color.Black);
 		var pen = new Pen(Color.Black, 1);
 
@@ -154,17 +158,17 @@ public partial class PouleForm : Form
 		var ptsPerc = stringWidth + numberWidth;
 		var gdPerc = stringWidth + numberWidth * 6;
 
-		
+		//TODO: Create a table class to do all the drawing for the table
 		graphics.DrawRectangle(pen, rect.X, startheight, rect.Width, heightInc);
 		graphics.FillRectangle(new SolidBrush(Color.FromArgb(75, color)), new Rectangle(rect.X, startheight, rect.Width, heightInc));
         graphics.DrawString(pos.ToString(), font, brush, new Rectangle(rect.X, startheight, (int)(numberWidth * rect.Width), heightInc), format);
         graphics.DrawString(row.Club.Name, font, brush, new Rectangle(rect.X + (int)(numberWidth * rect.Width), startheight, (int)(stringWidth * rect.Width), heightInc), format);
-        graphics.DrawString(row.GetPoints().ToString(), font, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth) * rect.Width), startheight, (int)(numberWidth * rect.Width), heightInc), format);
+        graphics.DrawString(row.GetPoints().ToString(), adjustedFont, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth) * rect.Width), startheight - (int)(row.PointsAdded ? pointsYAdjust : 0), (int)(numberWidth * rect.Width), heightInc), format);
         graphics.DrawString(row.GetPlayed().ToString(), font, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth * 2) * rect.Width), startheight, (int)(numberWidth * rect.Width), heightInc), format);
         graphics.DrawString(row.Won.ToString(), font, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth * 3) * rect.Width), startheight, (int)(numberWidth * rect.Width), heightInc), format);
         graphics.DrawString(row.Drawn.ToString(), font, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth * 4) * rect.Width), startheight, (int)(numberWidth * rect.Width), heightInc), format);
         graphics.DrawString(row.Lost.ToString(), font, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth * 5) * rect.Width), startheight, (int)(numberWidth * rect.Width), heightInc), format);
-        graphics.DrawString(row.GetGoalDiff().ToString(), font, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth * 6) * rect.Width), startheight, (int)(numberWidth * rect.Width), heightInc), format);
+        graphics.DrawString(row.GetGoalDiff().ToString(), adjustedFont, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth * 6) * rect.Width), startheight, (int)(numberWidth * rect.Width), heightInc), format);
         graphics.DrawString(row.GoalsFor.ToString(), font, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth * 7) * rect.Width), startheight, (int)(numberWidth * rect.Width), heightInc), format);
         graphics.DrawString(row.GoalsAgainst.ToString(), font, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth * 8) * rect.Width), startheight, (int)(numberWidth * rect.Width), heightInc), format);
         graphics.DrawString(row.Club.GetRating().ToString(), font, brush, new Rectangle(rect.X + (int)((stringWidth + numberWidth * 9) * rect.Width), startheight, (int)(numberWidth * 1.5 * rect.Width), heightInc), format);
@@ -229,13 +233,18 @@ public partial class PouleForm : Form
 			}
 		}
 
+		ResetSizing();
+		Refresh();
+	}
+
+	private void ResetSizing()
+	{
 		_pointsSizeFactor = 1;
 		_addValueSizeFactor = 1;
 		_addValueOffset = 0.5;
-		
-		Refresh();
-	}
-	
+		_poule.Stand.ForEach(s => s.ResetSizing());
+	}	
+
 	private Color GetBackgroundColor(int pos)
 	{
 		return pos <= _teamsAdvancing 

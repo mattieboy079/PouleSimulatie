@@ -3,17 +3,17 @@ namespace PouleSimulatie;
 public class StandRow
 {
     public Club Club { get; }
-    public int Won { get; set; }
-    public int Drawn { get; set; }
-    public int Lost { get; set; }
-    public int GoalsFor { get; set; }
-    public int GoalsAgainst { get; set; }
+    public int Won { get; private set; }
+    public int Drawn { get; private set; }
+    public int Lost { get; private set; }
+    public int GoalsFor { get; private set; }
+    public int GoalsAgainst { get; private set; }
     
     // Properties for animation
-    public int? PointsToAdd { get; set; }
-    public int? GoalsForToAdd { get; set; }
-    public int? GoalsAgainstToAdd { get; set; }
-    public bool PointsAdded { get; set; }
+    public int? PointsToAdd { get; private set; }
+    public int? GoalsForToAdd { get; private set; }
+    public int? GoalsAgainstToAdd { get; private set; }
+    public bool PointsAdded { get; private set; }
 
     public StandRow(Club club)
     {
@@ -50,6 +50,9 @@ public class StandRow
     
     public void AddValues()
     {
+        if (PointsToAdd == null)
+            return;
+        
         var pts = PointsToAdd.Value;
         switch (pts)
         {
@@ -65,11 +68,16 @@ public class StandRow
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        GoalsFor += GoalsForToAdd.Value;
-        GoalsAgainst += GoalsAgainstToAdd.Value;
+        GoalsFor += GoalsForToAdd!.Value;
+        GoalsAgainst += GoalsAgainstToAdd!.Value;
         PointsToAdd = null;
         GoalsForToAdd = null;
         GoalsAgainstToAdd = null;
         PointsAdded = true;
+    }
+
+    public void ResetSizing()
+    {
+        PointsAdded = false;
     }
 }
