@@ -29,10 +29,11 @@ public partial class MainForm : Form
 		ListTeams.Items.Clear();
 		foreach (var club in _clubService.CreateRandomClubs(4))
 			ListTeams.Items.Add(club.ToString());
+		NumAdvancingTeams.Maximum = 3;
+		NumAdvancingTeams.Value = 2;
 		NumAtt.Text = "";
 		NumMid.Text = "";
 		NumDef.Text = "";
-		NumAdvancingTeams.Value = 2;
 	}
 	
 	private void BtnAdd_Click(object sender, EventArgs e)

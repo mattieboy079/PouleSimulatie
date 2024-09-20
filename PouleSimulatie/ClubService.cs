@@ -58,7 +58,9 @@ public class ClubService
             
             var min = 1;
             var max = 99;
-            yield return new Club($"Club {i + 1}", random.Next(min, max), random.Next(min, max), random.Next(min, max));
+            var club = new Club($"Club {i + 1}", random.Next(min, max), random.Next(min, max), random.Next(min, max));
+            _clubs.Add(club);
+            yield return club;
             amount--;
         }
     }
