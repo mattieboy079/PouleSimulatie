@@ -1,6 +1,6 @@
 namespace PouleSimulatie.Services;
 
-public class AnimationService
+public class AnimationService : IAnimationService
 {
 	private readonly Form _form;
 	
@@ -11,8 +11,8 @@ public class AnimationService
 	private double _addValueOffset;
 	private double _addValueSizeFactor = 1;
 	private double _pointsSizeFactor = 1;
-	private Dictionary<string, int> _clubRowOffset;
-	private Dictionary<string, double> _clubRowSize;
+	private readonly Dictionary<string, int> _clubRowOffset;
+	private readonly Dictionary<string, double> _clubRowSize;
 	private Dictionary<string, int> _lastDrawnOrder;
 	private Poule _poule { get; }
 	
@@ -40,7 +40,80 @@ public class AnimationService
 		AddPoints();
 		OrderStand();
 	}
+	
+	/// <summary>
+	/// Draw the matches for the selected playround
+	/// </summary>
+	/// <param name="graphics">graphics to draw with</param>
+	/// <param name="matches"></param>
+	public void DrawPlayRound(Graphics graphics, List<Match> matches)
+	{
+		for(var index = 0; index < matches.Count; index++)
+		{
+			var match = matches[index];
+			var homeClub = match.HomeClub;
+			var awayClub = match.AwayClub;
+			var scoreString = match.IsPlayed ? $"{match.HomeGoals} - {match.AwayGoals}" : "";
+			var matchString = $"{homeClub.Name} ({homeClub.GetRating()}) - {awayClub.Name} ({awayClub.GetRating()})";
+			DrawMatch(graphics, index, matchString, scoreString);
+		}
+	}
+	
+	/// <summary>
+	/// Draw the stand of the poule
+	/// </summary>
+	/// <param name="graphics">The graphics to draw with</param>
+	public void DrawStand(Graphics graphics)
+	{
+		var startHeight = 110;
+		var font = new Font("Arial", 16);
+		var brush = new SolidBrush(Color.Black);
+		var pen = new Pen(Color.Black, 1);
 
+		var format = new StringFormat
+		{
+			LineAlignment = StringAlignment.Center
+		};
+		
+		var tableRect = new Rectangle(380, startHeight, _form.Size.Width - 410, TableRowHeight);
+		
+		graphics.DrawRectangle(pen, tableRect.X, tableRect.Y, tableRect.Width, TableRowHeight);
+        graphics.DrawString("#", font, brush, new Rectangle(tableRect.X, tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
+        graphics.DrawString("Club", font, brush, new Rectangle(tableRect.X + (int)(NumberWidth * tableRect.Width), tableRect.Y, (int)(StringWidth * tableRect.Width), TableRowHeight), format);
+        graphics.DrawString("Pts", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
+        graphics.DrawString("P", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 2) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
+        graphics.DrawString("W", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 3) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
+        graphics.DrawString("D", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 4) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
+        graphics.DrawString("L", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 5) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
+        graphics.DrawString("+/-", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 6) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
+        graphics.DrawString("+", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 7) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
+        graphics.DrawString("-", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 8) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
+        graphics.DrawString("Rating", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 9) * tableRect.Width), tableRect.Y, (int)(NumberWidth * 1.5 * tableRect.Width), TableRowHeight), format);
+        
+        if (_isOrdering)
+        {
+	        for (int i = 0; i < _poule.Stand.Count; i++)
+	        {
+		        var height = tableRect.Y + (i + 1) * TableRowHeight - _clubRowOffset[_poule.Stand[i].Club.Name];
+		        var widthInc = tableRect.Width * (_clubRowSize[_poule.Stand[i].Club.Name] - 1);
+		        var heightInc = TableRowHeight * (_clubRowSize[_poule.Stand[i].Club.Name] - 1);
+		        var rect = new Rectangle((int)(tableRect.X - widthInc / 2), (int)(height - heightInc / 2), (int)(tableRect.Width + widthInc), (int)(TableRowHeight + heightInc));
+		        var pos = i + 1;
+		        DrawTableRow(graphics, _poule.Stand[i], rect, GetBackgroundColor(pos), pos, format);
+	        }
+        }
+        else
+        {
+	        for (int i = 0; i < _poule.Clubs.Count; i++)
+	        {
+		        var height = tableRect.Y + (i + 1) * TableRowHeight;
+		        var rect = new Rectangle(tableRect.X, height, tableRect.Width, TableRowHeight);
+		        var pos = i + 1;
+		        DrawTableRow(graphics, _poule.Stand[i], rect, GetBackgroundColor(pos), pos, format);
+	        }
+        }
+  	}
+	
 	/// <summary>
 	/// Animate the points to added to the stand
 	/// </summary>
@@ -203,61 +276,6 @@ public class AnimationService
 	}	
 	
 	/// <summary>
-	/// Draw the stand of the poule
-	/// </summary>
-	/// <param name="graphics">The graphics to draw with</param>
-	public void DrawStand(Graphics graphics)
-	{
-		var startHeight = 110;
-		var font = new Font("Arial", 16);
-		var brush = new SolidBrush(Color.Black);
-		var pen = new Pen(Color.Black, 1);
-
-		var format = new StringFormat
-		{
-			LineAlignment = StringAlignment.Center
-		};
-		
-		var tableRect = new Rectangle(380, startHeight, _form.Size.Width - 410, TableRowHeight);
-		
-		graphics.DrawRectangle(pen, tableRect.X, tableRect.Y, tableRect.Width, TableRowHeight);
-        graphics.DrawString("#", font, brush, new Rectangle(tableRect.X, tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("Club", font, brush, new Rectangle(tableRect.X + (int)(NumberWidth * tableRect.Width), tableRect.Y, (int)(StringWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("Pts", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("P", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 2) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("W", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 3) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("D", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 4) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("L", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 5) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("+/-", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 6) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("+", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 7) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("-", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 8) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("Rating", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 9) * tableRect.Width), tableRect.Y, (int)(NumberWidth * 1.5 * tableRect.Width), TableRowHeight), format);
-        
-        if (_isOrdering)
-        {
-	        for (int i = 0; i < _poule.Stand.Count; i++)
-	        {
-		        var height = tableRect.Y + (i + 1) * TableRowHeight - _clubRowOffset[_poule.Stand[i].Club.Name];
-		        var widthInc = tableRect.Width * (_clubRowSize[_poule.Stand[i].Club.Name] - 1);
-		        var heightInc = TableRowHeight * (_clubRowSize[_poule.Stand[i].Club.Name] - 1);
-		        var rect = new Rectangle((int)(tableRect.X - widthInc / 2), (int)(height - heightInc / 2), (int)(tableRect.Width + widthInc), (int)(TableRowHeight + heightInc));
-		        var pos = i + 1;
-		        DrawTableRow(graphics, _poule.Stand[i], rect, GetBackgroundColor(pos), pos, format);
-	        }
-        }
-        else
-        {
-	        for (int i = 0; i < _poule.Clubs.Count; i++)
-	        {
-		        var height = tableRect.Y + (i + 1) * TableRowHeight;
-		        var rect = new Rectangle(tableRect.X, height, tableRect.Width, TableRowHeight);
-		        var pos = i + 1;
-		        DrawTableRow(graphics, _poule.Stand[i], rect, GetBackgroundColor(pos), pos, format);
-	        }
-        }
-  	}
-
-	/// <summary>
 	/// Draw a row in the table
 	/// </summary>
 	/// <param name="graphics">The graphics to draw with</param>
@@ -322,25 +340,6 @@ public class AnimationService
 		return pos <= _poule.TeamsAdvancing 
 			? Color.LimeGreen 
 			: Color.White;
-	}
-
-	
-	/// <summary>
-	/// Draw the matches for the selected playround
-	/// </summary>
-	/// <param name="graphics">graphics to draw with</param>
-	/// <param name="matches"></param>
-	public void DrawPlayRound(Graphics graphics, List<Match> matches)
-	{
-		for(var index = 0; index < matches.Count; index++)
-		{
-			var match = matches[index];
-			var homeClub = match.HomeClub;
-			var awayClub = match.AwayClub;
-			var scoreString = match.IsPlayed ? $"{match.HomeGoals} - {match.AwayGoals}" : "";
-			var matchString = $"{homeClub.Name} ({homeClub.GetRating()}) - {awayClub.Name} ({awayClub.GetRating()})";
-			DrawMatch(graphics, index, matchString, scoreString);
-		}
 	}
 	
 	/// <summary>

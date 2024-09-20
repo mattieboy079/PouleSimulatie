@@ -6,7 +6,7 @@ public partial class PouleForm : Form
 {
 	private readonly Poule _poule;
 	private int _currentRound = 1;
-	private readonly AnimationService _animationService;
+	private readonly IAnimationService _animationService;
 
 	public PouleForm(IReadOnlyList<Club> clubs, bool returns, int teamsAdvancing)
 	{

@@ -2,7 +2,7 @@ using System.Data;
 
 namespace PouleSimulatie.Services;
 
-public class ClubService
+public class ClubService : IClubService
 {
     private readonly List<Club> _clubs = new();
     public IReadOnlyList<Club> Clubs => _clubs.AsReadOnly();

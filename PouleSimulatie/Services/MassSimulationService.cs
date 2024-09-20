@@ -2,31 +2,22 @@ using PouleSimulatie.MassSimulation;
 
 namespace PouleSimulatie.Services;
 
-public class MassSimulationService
+public class MassSimulationService : ISimulationService
 {
-    private readonly IReadOnlyList<Club> _clubs;
-    private readonly bool _returns;
     private int _simulationsFinished;
-
-    public MassSimulationService(IReadOnlyList<Club> clubs, bool returns)
-    {
-        _clubs = clubs;
-        _returns = returns;
-    }
-
-    public async Task<MassSimulationResult?> Simulate(int simulations, int teamsAdvancing)
+    
+    public async Task<MassSimulationResult> Simulate(int simulations, IReadOnlyList<Club> clubs, bool returns, int teamsAdvancing)
     {
         _simulationsFinished = 0;
         
-        if (_clubs.Count < 2)
+        if (clubs.Count < 2)
         {
-            MessageBox.Show("Voeg minimaal 2 teams toe.");
-            return null;
+            throw new ArgumentException("Voeg minimaal 2 teams toe.");
         }
         
         var random = new Random();
         
-        var simulationResult = new MassSimulationResult(_clubs);
+        var simulationResult = new MassSimulationResult(clubs);
 
         var startTime = DateTime.Now;
         var tasks = new List<Task>();
@@ -34,7 +25,7 @@ public class MassSimulationService
         {
             tasks.Add(Task.Run(() =>
             {
-                Poule poule = new(_clubs, _returns, teamsAdvancing, random);
+                Poule poule = new(clubs, returns, teamsAdvancing, random);
                 poule.Init();
                 poule.SimulateAllMatches();
                 simulationResult.AddResults(poule);

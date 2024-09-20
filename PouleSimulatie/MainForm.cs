@@ -5,11 +5,14 @@ namespace PouleSimulatie;
 
 public partial class MainForm : Form
 {
-	private readonly ClubService _clubService = new();
+	private readonly IClubService _clubService;
+	private readonly ISimulationService _simulationService;
 	
-	public MainForm()
+	public MainForm(IClubService clubService, ISimulationService simulationService)
 	{
 		InitializeComponent();
+		_clubService = clubService;
+		_simulationService = simulationService;
 	}
 	
 	/// <summary>
@@ -111,12 +114,11 @@ public partial class MainForm : Form
 		pbSimulateThousand.Visible = true;
 		pbSimulateThousand.Value = 0;
 		pbSimulateThousand.Maximum = simulations;
-		var simulationService = new MassSimulationService(_clubService.Clubs, CheckReturns.Checked);
-		var task = simulationService.Simulate(simulations, (int)NumAdvancingTeams.Value);
+		var task = _simulationService.Simulate(simulations, _clubService.Clubs, CheckReturns.Checked, (int)NumAdvancingTeams.Value);
 
 		while (!task.IsCompleted)
 		{
-			var progress = simulationService.GetProgress();
+			var progress = _simulationService.GetProgress();
 			pbSimulateThousand.Value = progress;
 			Application.DoEvents();
 			Task.Delay(50).GetAwaiter().GetResult();
