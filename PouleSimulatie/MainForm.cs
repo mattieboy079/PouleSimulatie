@@ -118,20 +118,19 @@ public partial class MainForm : Form
 
 		while (!task.IsCompleted)
 		{
+			Task.Delay(15).GetAwaiter().GetResult();
 			var progress = _simulationService.GetProgress();
 			pbSimulateThousand.Value = progress;
 			Application.DoEvents();
-			Task.Delay(50).GetAwaiter().GetResult();
 		}
-
+		
 		var result = task.Result;
 		
 		if (result == null)
 			return;
-
-		pbSimulateThousand.Visible = false;
-
+		
 		MessageBox.Show($"Time: {result.TimeTaken}\n{result.GetResults(simulations)}");
+		pbSimulateThousand.Visible = false;
 	}
 
 	#endregion

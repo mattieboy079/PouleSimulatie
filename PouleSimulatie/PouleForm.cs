@@ -39,7 +39,7 @@ public partial class PouleForm : Form
 		LblPlayround.Text = $"{_currentRound}/{_poule.TotalRondes}";
 		var matches = _poule.GetMatches(_currentRound);
 		_animationService.DrawPlayRound(graphics, matches);
-		_animationService.DrawStand(graphics);
+		_animationService.DrawStand(graphics, new Rectangle(380, 110, Size.Width - 410, Size.Height - 170));
 	}
 	
 	/// <summary>

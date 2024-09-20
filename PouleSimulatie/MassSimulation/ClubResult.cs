@@ -36,6 +36,6 @@ public class ClubResult
     /// <returns>The clubresult</returns>
     public string GetResult(int simulations)
     {
-        return $"{ClubName} ({Rating})- {string.Join(", ", _results.Select(r => $"{r.Key}: {r.Value}"))} - {Math.Round((double)_totalPoints / simulations, 2)} pts avg";
+        return $"{ClubName} ({Rating}) - {string.Join(", ", _results.Select(r => $"{r.Key}: {r.Value}"))} - {Math.Round((double)_totalPoints / simulations, 2)} pts avg";
     }
 }

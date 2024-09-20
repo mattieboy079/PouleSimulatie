@@ -7,13 +7,13 @@ public class AnimationService : IAnimationService
 	private bool _isOrdering;
 	private const double NumberWidth = 0.07;
 	private const double StringWidth = 0.265;
-	private const int TableRowHeight = 30;
 	private double _addValueOffset;
 	private double _addValueSizeFactor = 1;
 	private double _pointsSizeFactor = 1;
 	private readonly Dictionary<string, int> _clubRowOffset;
 	private readonly Dictionary<string, double> _clubRowSize;
 	private Dictionary<string, int> _lastDrawnOrder;
+	private int _rowHeight = 30;
 	private Poule _poule { get; }
 	
 	public AnimationService(Form form, Poule poule)
@@ -29,7 +29,6 @@ public class AnimationService : IAnimationService
 			_clubRowOffset.Add(_poule.Clubs[i].Name, 0);
 			_lastDrawnOrder.Add(_poule.Clubs[i].Name, i);
 		}
-
 	}
 
 	/// <summary>
@@ -41,11 +40,6 @@ public class AnimationService : IAnimationService
 		OrderStand();
 	}
 	
-	/// <summary>
-	/// Draw the matches for the selected playround
-	/// </summary>
-	/// <param name="graphics">graphics to draw with</param>
-	/// <param name="matches"></param>
 	public void DrawPlayRound(Graphics graphics, List<Match> matches)
 	{
 		for(var index = 0; index < matches.Count; index++)
@@ -59,14 +53,12 @@ public class AnimationService : IAnimationService
 		}
 	}
 	
-	/// <summary>
-	/// Draw the stand of the poule
-	/// </summary>
-	/// <param name="graphics">The graphics to draw with</param>
-	public void DrawStand(Graphics graphics)
+	public void DrawStand(Graphics graphics, Rectangle rect)
 	{
-		var startHeight = 110;
-		var font = new Font("Arial", 16);
+		_rowHeight = Math.Min(30, rect.Height / (_poule.Clubs.Count + 1));
+		
+		double baseFontSize = _rowHeight / 2;
+		var font = new Font("Arial", (float)baseFontSize, FontStyle.Regular);
 		var brush = new SolidBrush(Color.Black);
 		var pen = new Pen(Color.Black, 1);
 
@@ -75,41 +67,41 @@ public class AnimationService : IAnimationService
 			LineAlignment = StringAlignment.Center
 		};
 		
-		var tableRect = new Rectangle(380, startHeight, _form.Size.Width - 410, TableRowHeight);
+		var headerRect = rect with { Height = _rowHeight };
 		
-		graphics.DrawRectangle(pen, tableRect.X, tableRect.Y, tableRect.Width, TableRowHeight);
-        graphics.DrawString("#", font, brush, new Rectangle(tableRect.X, tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("Club", font, brush, new Rectangle(tableRect.X + (int)(NumberWidth * tableRect.Width), tableRect.Y, (int)(StringWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("Pts", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("P", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 2) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("W", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 3) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("D", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 4) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("L", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 5) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("+/-", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 6) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("+", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 7) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("-", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 8) * tableRect.Width), tableRect.Y, (int)(NumberWidth * tableRect.Width), TableRowHeight), format);
-        graphics.DrawString("Rating", font, brush, new Rectangle(tableRect.X + (int)((StringWidth + NumberWidth * 9) * tableRect.Width), tableRect.Y, (int)(NumberWidth * 1.5 * tableRect.Width), TableRowHeight), format);
+		graphics.DrawRectangle(pen, headerRect);
+        graphics.DrawString("#", font, brush, headerRect with { Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("Club", font, brush, headerRect with { X = headerRect.X + (int)(NumberWidth * headerRect.Width), Width = (int)(StringWidth * headerRect.Width) }, format);
+        graphics.DrawString("Pts", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("P", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 2) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("W", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 3) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("D", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 4) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("L", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 5) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("+/-", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 6) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("+", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 7) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("-", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 8) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("Rating", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 9) * headerRect.Width), Width = (int)(NumberWidth * 1.5 * headerRect.Width) }, format);
         
         if (_isOrdering)
         {
 	        for (int i = 0; i < _poule.Stand.Count; i++)
 	        {
-		        var height = tableRect.Y + (i + 1) * TableRowHeight - _clubRowOffset[_poule.Stand[i].Club.Name];
-		        var widthInc = tableRect.Width * (_clubRowSize[_poule.Stand[i].Club.Name] - 1);
-		        var heightInc = TableRowHeight * (_clubRowSize[_poule.Stand[i].Club.Name] - 1);
-		        var rect = new Rectangle((int)(tableRect.X - widthInc / 2), (int)(height - heightInc / 2), (int)(tableRect.Width + widthInc), (int)(TableRowHeight + heightInc));
+		        var height = rect.Y + (i + 1) * _rowHeight - _clubRowOffset[_poule.Stand[i].Club.Name];
+		        var widthInc = rect.Width * (_clubRowSize[_poule.Stand[i].Club.Name] - 1);
+		        var heightInc = _rowHeight * (_clubRowSize[_poule.Stand[i].Club.Name] - 1);
+		        var rowRect = new Rectangle((int)(rect.X - widthInc / 2), (int)(height - heightInc / 2), (int)(rect.Width + widthInc), (int)(_rowHeight + heightInc));
 		        var pos = i + 1;
-		        DrawTableRow(graphics, _poule.Stand[i], rect, GetBackgroundColor(pos), pos, format);
+		        DrawTableRow(graphics, _poule.Stand[i], rowRect, GetBackgroundColor(pos), pos, format);
 	        }
         }
         else
         {
 	        for (int i = 0; i < _poule.Clubs.Count; i++)
 	        {
-		        var height = tableRect.Y + (i + 1) * TableRowHeight;
-		        var rect = new Rectangle(tableRect.X, height, tableRect.Width, TableRowHeight);
+		        var height = rect.Y + (i + 1) * _rowHeight;
+		        var rowRect = rect with { Y = height, Height = _rowHeight };
 		        var pos = i + 1;
-		        DrawTableRow(graphics, _poule.Stand[i], rect, GetBackgroundColor(pos), pos, format);
+		        DrawTableRow(graphics, _poule.Stand[i], rowRect, GetBackgroundColor(pos), pos, format);
 	        }
         }
   	}
@@ -217,7 +209,7 @@ public class AnimationService : IAnimationService
 							_clubRowSize[stand.Club.Name] = 1 - changeSizeFactor * deltaTime / changeSizeMs;
 						else
 							_clubRowSize[stand.Club.Name] = 1;
-						_clubRowOffset[stand.Club.Name] = clubMoveY[stand.Club.Name] * TableRowHeight;
+						_clubRowOffset[stand.Club.Name] = clubMoveY[stand.Club.Name] * _rowHeight;
 					}
 				}
 				else if (deltaTime <= changeSizeMs + orderTableMs)
@@ -231,7 +223,7 @@ public class AnimationService : IAnimationService
 						else
 							_clubRowSize[stand.Club.Name] = 1;
 						var percentageToMove = 1 - (deltaTime - changeSizeMs) / orderTableMs;
-						_clubRowOffset[stand.Club.Name] = (int)(clubMoveY[stand.Club.Name] * TableRowHeight * percentageToMove);
+						_clubRowOffset[stand.Club.Name] = (int)(clubMoveY[stand.Club.Name] * _rowHeight * percentageToMove);
 					}					
 				}
 				else
@@ -309,7 +301,7 @@ public class AnimationService : IAnimationService
 		const double gdPercentage = StringWidth + NumberWidth * 6;
 
 		graphics.DrawRectangle(pen, rect.X, startHeight, rect.Width, heightInc);
-		graphics.FillRectangle(new SolidBrush(Color.FromArgb(75, color)), new Rectangle(rect.X, startHeight, rect.Width, heightInc));
+		graphics.FillRectangle(new SolidBrush(Color.FromArgb(75, color)), rect with { Y = startHeight, Height = heightInc });
         graphics.DrawString(pos.ToString(), font, brush, new Rectangle(rect.X, startHeight, (int)(NumberWidth * rect.Width), heightInc), format);
         graphics.DrawString(row.Club.Name, font, brush, new Rectangle(rect.X + (int)(NumberWidth * rect.Width), startHeight, (int)(StringWidth * rect.Width), heightInc), format);
         graphics.DrawString(row.GetPoints().ToString(), adjustedFont, brush, new Rectangle(rect.X + (int)((StringWidth + NumberWidth) * rect.Width), startHeight - (int)(row.PointsAdded ? pointsYAdjust : 0), (int)(NumberWidth * rect.Width), heightInc), format);
@@ -356,7 +348,7 @@ public class AnimationService : IAnimationService
 		var font = new Font("Arial", 16);
 		var brush = new SolidBrush(Color.Black);
 		
-		graphics.DrawString(matchString, font, brush, 12, startHeight + TableRowHeight * index);
-		graphics.DrawString(scoreString, font, brush, 300, startHeight + TableRowHeight * index);
+		graphics.DrawString(matchString, font, brush, 12, startHeight + _rowHeight * index);
+		graphics.DrawString(scoreString, font, brush, 300, startHeight + _rowHeight * index);
 	}
 }
