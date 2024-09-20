@@ -5,16 +5,17 @@ public partial class PouleForm : Form
 	private readonly Poule _poule;
 	private int _currentRound = 1;
 	private readonly int _teamsAdvancing;
+	
+	//Animation properties
 	private bool _isOrdering;
 	private const double NumberWidth = 0.07;
 	private const double StringWidth = 0.265;
 	private const int TableRowHeight = 30;
-
 	private double _addValueOffset;
 	private double _addValueSizeFactor = 1;
 	private double _pointsSizeFactor = 1;
-	private Dictionary<string, int> _clubRowOffset;
-	private Dictionary<string, double> _clubRowSize;
+	private readonly Dictionary<string, int> _clubRowOffset;
+	private readonly Dictionary<string, double> _clubRowSize;
 	private Dictionary<string, int> _lastDrawnOrder;
 
 	public PouleForm(List<Club> clubs, bool returns, int teamsAdvancing)
@@ -83,7 +84,6 @@ public partial class PouleForm : Form
 
 	private void DrawStand(Graphics graphics)
 	{
-		//TODO: Create a table class to do all the drawing for the table
 		var startHeight = 110;
 		var font = new Font("Arial", 16);
 		var brush = new SolidBrush(Color.Black);
@@ -157,7 +157,6 @@ public partial class PouleForm : Form
 		const double ptsPercentage = StringWidth + NumberWidth;
 		const double gdPercentage = StringWidth + NumberWidth * 6;
 
-		//TODO: Create a table class to do all the drawing for the table
 		graphics.DrawRectangle(pen, rect.X, startHeight, rect.Width, heightInc);
 		graphics.FillRectangle(new SolidBrush(Color.FromArgb(75, color)), new Rectangle(rect.X, startHeight, rect.Width, heightInc));
         graphics.DrawString(pos.ToString(), font, brush, new Rectangle(rect.X, startHeight, (int)(NumberWidth * rect.Width), heightInc), format);
@@ -294,10 +293,7 @@ public partial class PouleForm : Form
 		if (clubMoveY.Values.Any(v => v != 0)) // Needs Order
 		{
 			Task.Delay(500);
-
-			_clubRowSize = new Dictionary<string, double>();
-			_clubRowOffset = new Dictionary<string, int>();
-
+			
 			_isOrdering = true;
 			var changeSizeMs = 250;
 			var orderTableMs = 500;
