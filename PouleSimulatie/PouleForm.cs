@@ -45,26 +45,7 @@ public partial class PouleForm : Form
 		}
 		Refresh();
 	}
-
-	/// <summary>
-	/// Paint event handler
-	/// </summary>
-	private void Draw(object? sender, PaintEventArgs e)
-	{
-		var graphics = e.Graphics;
-		DrawPlayRound(graphics);
-		DrawStand(graphics);
-	}
 	
-	/// <summary>
-	/// Refresh the screen after resize event
-	/// </summary>
-	private void RefreshScreen(object? sender, EventArgs e)
-	{
-		BtnExit.Location = new Point(Size.Width - 162, 12);
-		Refresh();
-	}
-
 	/// <summary>
 	/// Draw the matches for the selected playround
 	/// </summary>
@@ -295,34 +276,6 @@ public partial class PouleForm : Form
 	}
 	
 	/// <summary>
-	/// Event handler for the play one match button
-	/// </summary>
-	private void BtnPlayOne_Click(object sender, EventArgs e)
-	{
-		var nextRound = _poule.GetNextMatchRound();
-		if (nextRound == null)
-		{
-			MessageBox.Show("Alle wedstrijden zijn al gespeeld");
-			return;
-		}
-
-		_currentRound = nextRound.Value;
-		_poule.SimulateNextMatch();
-		AnimatePointsGained();
-		Refresh();
-	}
-
-	/// <summary>
-	/// Event handler for the simulate all matches button
-	/// </summary>
-	private void BtnSimulateAll_Click(object sender, EventArgs e)
-	{
-		_poule.SimulateAllMatches();
-		AnimatePointsGained();
-		Refresh();
-	}
-
-	/// <summary>
 	/// Animate the points gained by the clubs
 	/// </summary>
 	private void AnimatePointsGained()
@@ -420,7 +373,56 @@ public partial class PouleForm : Form
 			_clubRowSize[club.Name] = 1;
 		}
 	}
+	
+	#region EventHandlers
 
+	/// <summary>
+	/// Paint event handler
+	/// </summary>
+	private void OnPaintHandler(object? sender, PaintEventArgs e)
+	{
+		var graphics = e.Graphics;
+		DrawPlayRound(graphics);
+		DrawStand(graphics);
+	}
+	
+	/// <summary>
+	/// Refresh the screen after resize event
+	/// </summary>
+	private void SizeChangedHandler(object? sender, EventArgs e)
+	{
+		BtnExit.Location = new Point(Size.Width - 162, 12);
+		Refresh();
+	}
+
+	/// <summary>
+	/// Event handler for the play one match button
+	/// </summary>
+	private void BtnPlayOne_Click(object sender, EventArgs e)
+	{
+		var nextRound = _poule.GetNextMatchRound();
+		if (nextRound == null)
+		{
+			MessageBox.Show("Alle wedstrijden zijn al gespeeld");
+			return;
+		}
+
+		_currentRound = nextRound.Value;
+		_poule.SimulateNextMatch();
+		AnimatePointsGained();
+		Refresh();
+	}
+
+	/// <summary>
+	/// Event handler for the simulate all matches button
+	/// </summary>
+	private void BtnSimulateAll_Click(object sender, EventArgs e)
+	{
+		_poule.SimulateAllMatches();
+		AnimatePointsGained();
+		Refresh();
+	}
+	
 	/// <summary>
 	/// Eventhandler for the Previous round button
 	/// </summary>
@@ -450,4 +452,7 @@ public partial class PouleForm : Form
 	{
 		Close();
 	}
+
+
+	#endregion
 }

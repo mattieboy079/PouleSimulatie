@@ -108,8 +108,8 @@
 			Controls.Add(BtnExit);
 			Name = "PouleForm";
 			Text = "PouleForm";
-			Paint += Draw;
-			SizeChanged += RefreshScreen;
+			Paint += OnPaintHandler;
+			SizeChanged += SizeChangedHandler;
 			ResumeLayout(false);
 			PerformLayout();
 		}

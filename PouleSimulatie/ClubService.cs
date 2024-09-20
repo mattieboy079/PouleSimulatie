@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace PouleSimulatie;
 
 public class ClubService
@@ -34,5 +36,16 @@ public class ClubService
         
         _clubs.Remove(club);
         return true;
+    }
+
+    public Club TryCreatingClub(string clubName, decimal attack, decimal midfield, decimal defence)
+    {
+        if (Clubs.Any(c => c.Name == clubName))
+            throw new DuplicateNameException("Deze club bestaat al.");
+		
+        var club = new Club(clubName, (int)attack, (int)midfield, (int)defence);
+
+        _clubs.Add(club);
+        return club;
     }
 }

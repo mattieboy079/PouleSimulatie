@@ -1,14 +1,29 @@
+using System.Data;
+
 namespace PouleSimulatie;
 
 public partial class MainForm : Form
 {
-	private ClubService _clubService = new();
+	private readonly ClubService _clubService = new();
 	
 	public MainForm()
 	{
 		InitializeComponent();
 	}
 	
+	/// <summary>
+	/// Edit the components when a club is created
+	/// </summary>
+	/// <param name="club">The created club</param>
+	private void ClubCreated(Club club)
+	{
+		ListTeams.Items.Add($"{club.Name} - A:{club.Attack} M:{club.Midfield} D:{club.Defence}");
+		if(ListTeams.Items.Count > 1)
+			NumAdvancingTeams.Maximum = ListTeams.Items.Count - 1;
+	}
+
+	#region EventHandlers
+
 	private void MainForm_Load(object sender, EventArgs e)
 	{
 		ListTeams.Items.Clear();
@@ -38,37 +53,24 @@ public partial class MainForm : Form
 			MessageBox.Show("Vul alle ratings in.");
 			return;
 		}
-		
-		var clubName = TxtClubname.Text;
-		if (_clubService.Clubs.Any(c => c.Name == clubName))
-		{
-			MessageBox.Show("Deze club bestaat al.");
-			return;
-		}
-		
-		var attack = (int)NumAtt.Value;
-		var midfield = (int)NumMid.Value;
-		var defence = (int)NumDef.Value;
-		
-		var club = new Club(clubName, attack, midfield, defence);
-		ClubCreated(club);
-		TxtClubname.Text = "";
-		NumAtt.Text = "";
-		NumMid.Text = "";
-		NumDef.Text = "";
-	}
 
-	/// <summary>
-	/// Edit the components when a club is created
-	/// </summary>
-	/// <param name="club">The created club</param>
-	private void ClubCreated(Club club)
-	{
-		if (!_clubService.AddClub(club)) return;
-		
-		ListTeams.Items.Add($"{club.Name} - A:{club.Attack} M:{club.Midfield} D:{club.Defence}");
-		if(ListTeams.Items.Count > 1)
-			NumAdvancingTeams.Maximum = ListTeams.Items.Count - 1;
+		try
+		{
+			var newClub = _clubService.TryCreatingClub(TxtClubname.Text, NumAtt.Value, NumMid.Value, NumDef.Value);
+			ClubCreated(newClub);
+			TxtClubname.Text = "";
+			NumAtt.Text = "";
+			NumMid.Text = "";
+			NumDef.Text = "";
+		}
+		catch (DuplicateNameException ex)
+		{
+			MessageBox.Show(ex.Message);
+		}
+		catch (Exception ex)
+		{
+			MessageBox.Show("Er is iets fout gegaan bij het toevoegen van de club.");
+		}
 	}
 
 	private void BtnDelete_Click(object sender, EventArgs e) 
@@ -76,7 +78,6 @@ public partial class MainForm : Form
 		if (ListTeams.SelectedItems.Count > 0)
 		{
 			var rowsToRemove = ListTeams.SelectedItems.Cast<string>().ToList();
-			var clubNames = rowsToRemove.Select(row => row.Split(" - ").First());
 			foreach (var row in rowsToRemove)
 			{
 				var clubName = row.Split(" - ").First();
@@ -134,4 +135,6 @@ public partial class MainForm : Form
 
 		MessageBox.Show($"Time: {result.TimeTaken}\n{result.GetResults(simulations)}");
 	}
+
+	#endregion
 }
