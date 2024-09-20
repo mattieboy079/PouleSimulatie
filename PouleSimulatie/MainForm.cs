@@ -58,6 +58,10 @@ public partial class MainForm : Form
 		NumDef.Text = "";
 	}
 
+	/// <summary>
+	/// Edit the components when a club is created
+	/// </summary>
+	/// <param name="club">The created club</param>
 	private void ClubCreated(Club club)
 	{
 		_clubs.Add(club);

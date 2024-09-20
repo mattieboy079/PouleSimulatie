@@ -20,8 +20,16 @@ public class StandRow
         Club = club;
     }
 
+    /// <summary>
+    /// Add the results of a match to the club
+    /// </summary>
+    /// <param name="goalsFor">Goals scored in the match</param>
+    /// <param name="goalsAgainst">Goalc received in the match</param>
     public void MatchPlayed(int goalsFor, int goalsAgainst)
     {
+        if(PointsToAdd != null)
+            AddValues();
+        
         GoalsForToAdd = goalsFor;
         GoalsAgainstToAdd = goalsAgainst;
 
@@ -33,21 +41,37 @@ public class StandRow
             PointsToAdd = 1;
     }
     
+    /// <summary>
+    /// Get the amount of matches played
+    /// </summary>
+    /// <returns>Amount of matches</returns>
     public int GetPlayed()
     {
         return Won + Drawn + Lost;
     }
 
+    /// <summary>
+    /// Get the amount of points
+    /// </summary>
+    /// <returns>Amount of points</returns>
     public int GetPoints()
     {
         return Won * 3 + Drawn;
     }
 
+    /// <summary>
+    /// Get the goal difference
+    /// </summary>
+    /// <returns>The goal difference</returns>
     public int GetGoalDiff()
     {
         return GoalsFor - GoalsAgainst;
     }
     
+    /// <summary>
+    /// Add the values to add to the real values
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">Any number other than 3, 1 or 0 since this cannot determine a win loss or draw</exception>
     public void AddValues()
     {
         if (PointsToAdd == null)
@@ -76,6 +100,9 @@ public class StandRow
         PointsAdded = true;
     }
 
+    /// <summary>
+    /// Reset the values to default after animation
+    /// </summary>
     public void ResetSizing()
     {
         PointsAdded = false;

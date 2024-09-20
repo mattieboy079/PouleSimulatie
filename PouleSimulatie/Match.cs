@@ -16,6 +16,10 @@ public class Match
         AwayClub = awayClub;
     }
 
+    /// <summary>
+    /// Simulate the match
+    /// </summary>
+    /// <param name="random">The randomizer to use</param>
     public void Simulate(Random random)
     {
         var baseScoreChance = 0.5;
@@ -33,6 +37,12 @@ public class Match
         IsPlayed = true;
     }
 
+    /// <summary>
+    /// Calculate the chance to score
+    /// </summary>
+    /// <param name="baseChance">The base chance to score</param>
+    /// <param name="modifier">Modifier to use, 0.5x -> halves the chance to score, 2x -> halves the chance to not score</param>
+    /// <returns>The final chance to score</returns>
     private double GetScoreChance(double baseChance, double modifier)
     {
         double chance;

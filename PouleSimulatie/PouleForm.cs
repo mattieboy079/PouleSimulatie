@@ -14,8 +14,8 @@ public partial class PouleForm : Form
 	private double _addValueOffset;
 	private double _addValueSizeFactor = 1;
 	private double _pointsSizeFactor = 1;
-	private readonly Dictionary<string, int> _clubRowOffset;
-	private readonly Dictionary<string, double> _clubRowSize;
+	private Dictionary<string, int> _clubRowOffset;
+	private Dictionary<string, double> _clubRowSize;
 	private Dictionary<string, int> _lastDrawnOrder;
 
 	public PouleForm(List<Club> clubs, bool returns, int teamsAdvancing)
@@ -23,26 +23,32 @@ public partial class PouleForm : Form
 		_teamsAdvancing = teamsAdvancing;
 		DoubleBuffered = true;
 		_poule = new Poule(clubs, returns, new Random());
-		_clubRowOffset = new Dictionary<string, int>();
-		_clubRowSize = new Dictionary<string, double>();
-		_lastDrawnOrder = new Dictionary<string, int>();
-		for (var i = 0; i < clubs.Count; i++)
-		{
-			_clubRowSize.Add(clubs[i].Name, 1);
-			_clubRowOffset.Add(clubs[i].Name, 0);
-			_lastDrawnOrder.Add(clubs[i].Name, i);
-		}
 		InitializeComponent();
 		Init();
 	}
 
+	/// <summary>
+	/// Initialize the poule form
+	/// </summary>
 	private void Init()
 	{
 		_poule.Init();
 		LblPlayround.Text = $"1/{_poule.TotalRondes}";
+		_clubRowOffset = new Dictionary<string, int>();
+		_clubRowSize = new Dictionary<string, double>();
+		_lastDrawnOrder = new Dictionary<string, int>();
+		for (var i = 0; i < _poule.Clubs.Count; i++)
+		{
+			_clubRowSize.Add(_poule.Clubs[i].Name, 1);
+			_clubRowOffset.Add(_poule.Clubs[i].Name, 0);
+			_lastDrawnOrder.Add(_poule.Clubs[i].Name, i);
+		}
 		Refresh();
 	}
 
+	/// <summary>
+	/// Paint event handler
+	/// </summary>
 	private void Draw(object? sender, PaintEventArgs e)
 	{
 		var graphics = e.Graphics;
@@ -50,12 +56,19 @@ public partial class PouleForm : Form
 		DrawStand(graphics);
 	}
 	
+	/// <summary>
+	/// Refresh the screen after resize event
+	/// </summary>
 	private void RefreshScreen(object? sender, EventArgs e)
 	{
 		BtnExit.Location = new Point(Size.Width - 162, 12);
 		Refresh();
 	}
 
+	/// <summary>
+	/// Draw the matches for the selected playround
+	/// </summary>
+	/// <param name="graphics">graphics to draw with</param>
 	private void DrawPlayRound(Graphics graphics)
 	{
 		LblPlayround.Text = $"{_currentRound}/{_poule.TotalRondes}";
@@ -71,6 +84,13 @@ public partial class PouleForm : Form
 		}
 	}
 
+	/// <summary>
+	/// Draw a match on the screen
+	/// </summary>
+	/// <param name="graphics">Graphics to draw with</param>
+	/// <param name="index">Amount of matches drawn above</param>
+	/// <param name="matchString">The clubs battling in this match</param>
+	/// <param name="scoreString">The score result of the match</param>
 	private void DrawMatch(Graphics graphics, int index, string matchString, string scoreString)
 	{
 		var startHeight = 110;
@@ -82,6 +102,10 @@ public partial class PouleForm : Form
 		graphics.DrawString(scoreString, font, brush, 300, startHeight + TableRowHeight * index);
 	}
 
+	/// <summary>
+	/// Draw the stand of the poule
+	/// </summary>
+	/// <param name="graphics">The graphics to draw with</param>
 	private void DrawStand(Graphics graphics)
 	{
 		var startHeight = 110;
@@ -133,6 +157,15 @@ public partial class PouleForm : Form
         }
   	}
 
+	/// <summary>
+	/// Draw a row in the table
+	/// </summary>
+	/// <param name="graphics">The graphics to draw with</param>
+	/// <param name="row">The rowInformation</param>
+	/// <param name="rect">The rectangle defined for the row</param>
+	/// <param name="color">The background color of the row</param>
+	/// <param name="pos">The position of the row</param>
+	/// <param name="format">The stringformat for drawing strings</param>
 	private void DrawTableRow(Graphics graphics, StandRow row, Rectangle rect, Color color, int pos, StringFormat format)
 	{
 		double baseFontSize = rect.Height / 2;
@@ -179,6 +212,9 @@ public partial class PouleForm : Form
         }
 	}
 
+	/// <summary>
+	/// Animate the points to added to the stand
+	/// </summary>
 	private void AddPoints()
 	{
 		var incSizeMs = 1000;
@@ -235,6 +271,9 @@ public partial class PouleForm : Form
 		Refresh();
 	}
 
+	/// <summary>
+	/// Reset all sizing to default values after animation
+	/// </summary>
 	private void ResetSizing()
 	{
 		_pointsSizeFactor = 1;
@@ -243,13 +282,21 @@ public partial class PouleForm : Form
 		_poule.Stand.ForEach(s => s.ResetSizing());
 	}	
 
+	/// <summary>
+	/// Get the background color for a row in the stand
+	/// </summary>
+	/// <param name="pos">The position of the row</param>
+	/// <returns>The color to use as background</returns>
 	private Color GetBackgroundColor(int pos)
 	{
 		return pos <= _teamsAdvancing 
 			? Color.LimeGreen 
 			: Color.White;
 	}
-
+	
+	/// <summary>
+	/// Event handler for the play one match button
+	/// </summary>
 	private void BtnPlayOne_Click(object sender, EventArgs e)
 	{
 		var nextRound = _poule.GetNextMatchRound();
@@ -265,6 +312,9 @@ public partial class PouleForm : Form
 		Refresh();
 	}
 
+	/// <summary>
+	/// Event handler for the simulate all matches button
+	/// </summary>
 	private void BtnSimulateAll_Click(object sender, EventArgs e)
 	{
 		_poule.SimulateAllMatches();
@@ -272,12 +322,18 @@ public partial class PouleForm : Form
 		Refresh();
 	}
 
+	/// <summary>
+	/// Animate the points gained by the clubs
+	/// </summary>
 	private void AnimatePointsGained()
 	{
 		AddPoints();
 		OrderStand();
 	}
 	
+	/// <summary>
+	/// Animate the ordering of the standtable
+	/// </summary>
 	private void OrderStand()
 	{
 		var newStand = _poule.GetOrderedStand();
@@ -365,6 +421,9 @@ public partial class PouleForm : Form
 		}
 	}
 
+	/// <summary>
+	/// Eventhandler for the Previous round button
+	/// </summary>
 	private void BtnPrevious_Click(object sender, EventArgs e)
 	{
 		if(_currentRound > 1)
@@ -373,6 +432,9 @@ public partial class PouleForm : Form
 		Refresh();
 	}
 
+	/// <summary>
+	/// Eventhandler for the Next round button
+	/// </summary>
 	private void BtnNext_Click(object sender, EventArgs e)
 	{
 		if(_currentRound < _poule.TotalRondes)
@@ -381,6 +443,9 @@ public partial class PouleForm : Form
 		Refresh();
 	}
 
+	/// <summary>
+	/// Eventhandler for the Exit button
+	/// </summary>
 	private void BtnExit_Click(object sender, EventArgs e)
 	{
 		Close();

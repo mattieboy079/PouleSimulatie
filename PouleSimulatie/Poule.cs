@@ -9,6 +9,12 @@ public class Poule
     private bool _returns { get; }
     public int TotalRondes { get; private set; }
     
+    /// <summary>
+    /// Create a new poule
+    /// </summary>
+    /// <param name="clubs">The clubs or teams that </param>
+    /// <param name="returns">Whether the teams will have home and away matches against eachother</param>
+    /// <param name="random">A randomizer object to avoid all simulations have the same seeded randomizer object</param>
     public Poule(List<Club> clubs, bool returns, Random random)
     {
         Clubs = clubs;
@@ -18,6 +24,17 @@ public class Poule
         _matches = new List<Match>();
     }
 
+    /// <summary>
+    /// Initialize the poule
+    /// </summary>
+    public void Init()
+    {
+        CreateMatches();
+    }
+
+    /// <summary>
+    /// Create the matches for this poule
+    /// </summary>
     private void CreateMatches()
     {
         var clubs = Clubs.OrderBy(_ => _random.Next()).ToArray();
@@ -118,16 +135,20 @@ public class Poule
         _matches = _matches.OrderBy(m => m.Round).ToList();
     }
 
-    public void Init()
-    {
-        CreateMatches();
-    }
-
+    /// <summary>
+    /// Get all matches for a specific round
+    /// </summary>
+    /// <param name="round">the round to get the matches for</param>
+    /// <returns>List of matches in the given round</returns>
     public List<Match> GetMatches(int round)
     {
         return _matches.Where(m => m.Round == round).ToList();
     }
 
+    /// <summary>
+    /// Order the stand based on the points, goal difference, goals for and head to head result
+    /// </summary>
+    /// <returns>The ordered stand</returns>
     public List<StandRow> GetOrderedStand()
     {
         Stand = Stand
@@ -139,6 +160,12 @@ public class Poule
         return Stand;
     }
 
+    /// <summary>
+    /// Get the head to head result between two clubs
+    /// </summary>
+    /// <param name="club1">The first club</param>
+    /// <param name="club2">The second club</param>
+    /// <returns>value < 0 -> Club1 wins, value = 0 -> Equal, value > 0 Club2 wins</returns>
     private int GetHeadToHeadResult(Club club1, Club club2)
     {
         var matchesBetweenClubs = _matches.Where(m => 
@@ -188,6 +215,9 @@ public class Poule
         return club1Points - club2Points;
     }
     
+    /// <summary>
+    /// Simulate the next match in the poule
+    /// </summary>
     public void SimulateNextMatch()
     {
         var nextMatch = _matches.FirstOrDefault(m => !m.IsPlayed);
@@ -197,26 +227,41 @@ public class Poule
         SimulateMatch(nextMatch);
     }
 
+    /// <summary>
+    /// Simulate all the remaining matches in the poule
+    /// </summary>
     public void SimulateAllMatches()
     {
         Parallel.ForEach(_matches.Where(m => !m.IsPlayed), SimulateMatch);
     }
 
+    /// <summary>
+    /// Simulate a given match and update the stand
+    /// </summary>
+    /// <param name="match">The match to simulate</param>
     private void SimulateMatch(Match match)
     {
         match.Simulate(_random);
         UpdateStand(match);
     }
     
-    private void UpdateStand(Match match)
+    /// <summary>
+    /// Update the stand based on the result of a playedMatch
+    /// </summary>
+    /// <param name="playedMatch">The played playedMatch</param>
+    private void UpdateStand(Match playedMatch)
     {
-        var homeStand = Stand.First(s => s.Club == match.HomeClub);
-        var awayStand = Stand.First(s => s.Club == match.AwayClub);
+        var homeStand = Stand.First(s => s.Club == playedMatch.HomeClub);
+        var awayStand = Stand.First(s => s.Club == playedMatch.AwayClub);
         
-        homeStand.MatchPlayed(match.HomeGoals, match.AwayGoals);
-        awayStand.MatchPlayed(match.AwayGoals, match.HomeGoals);
+        homeStand.MatchPlayed(playedMatch.HomeGoals, playedMatch.AwayGoals);
+        awayStand.MatchPlayed(playedMatch.AwayGoals, playedMatch.HomeGoals);
     }
 
+    /// <summary>
+    /// Get the first round with matches that are not played yet
+    /// </summary>
+    /// <returns>The roundnumber, null means all matches have been played</returns>
     public int? GetNextMatchRound()
     {
         return _matches.FirstOrDefault(m => !m.IsPlayed)?.Round;
