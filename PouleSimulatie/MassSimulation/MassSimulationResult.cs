@@ -1,4 +1,4 @@
-namespace PouleSimulatie;
+namespace PouleSimulatie.MassSimulation;
 
 public class MassSimulationResult
 {
@@ -28,7 +28,7 @@ public class MassSimulationResult
     /// <returns>The result string to show</returns>
     public string GetResults(int simulations)
     {
-        return string.Join("\n", ClubResults.Select(c => c.GetResult(simulations)));
+        return string.Join("\n", ClubResults.OrderByDescending(c => c.Rating).Select(c => c.GetResult(simulations)));
     }
 
     public void SetTime(double timeTaken)

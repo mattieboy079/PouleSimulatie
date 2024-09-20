@@ -1,4 +1,5 @@
 using System.Data;
+using PouleSimulatie.Services;
 
 namespace PouleSimulatie;
 
@@ -111,7 +112,7 @@ public partial class MainForm : Form
 		pbSimulateThousand.Value = 0;
 		pbSimulateThousand.Maximum = simulations;
 		var simulationService = new MassSimulationService(_clubService.Clubs, CheckReturns.Checked);
-		var task = simulationService.Simulate(simulations);
+		var task = simulationService.Simulate(simulations, (int)NumAdvancingTeams.Value);
 
 		while (!task.IsCompleted)
 		{

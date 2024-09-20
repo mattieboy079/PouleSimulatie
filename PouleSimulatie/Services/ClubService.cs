@@ -1,7 +1,6 @@
-using System.Collections;
 using System.Data;
 
-namespace PouleSimulatie;
+namespace PouleSimulatie.Services;
 
 public class ClubService
 {

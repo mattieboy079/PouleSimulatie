@@ -1,4 +1,6 @@
-namespace PouleSimulatie;
+using PouleSimulatie.MassSimulation;
+
+namespace PouleSimulatie.Services;
 
 public class MassSimulationService
 {
@@ -12,7 +14,7 @@ public class MassSimulationService
         _returns = returns;
     }
 
-    public async Task<MassSimulationResult?> Simulate(int simulations)
+    public async Task<MassSimulationResult?> Simulate(int simulations, int teamsAdvancing)
     {
         _simulationsFinished = 0;
         
@@ -32,7 +34,7 @@ public class MassSimulationService
         {
             tasks.Add(Task.Run(() =>
             {
-                Poule poule = new(_clubs, _returns, random);
+                Poule poule = new(_clubs, _returns, teamsAdvancing, random);
                 poule.Init();
                 poule.SimulateAllMatches();
                 simulationResult.AddResults(poule);

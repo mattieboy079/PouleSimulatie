@@ -1,14 +1,16 @@
-namespace PouleSimulatie;
+namespace PouleSimulatie.MassSimulation;
 
 public class ClubResult
 {
     public readonly string ClubName;
+    public readonly int Rating;
     private readonly Dictionary<int, int> _results;
     private int _totalPoints;
 	
     public ClubResult(Club club, int clubsCount)
     {
         ClubName = club.Name;
+        Rating = club.GetRating();
         _results = new();
         for (int i = 1; i <= clubsCount; i++)
         {
@@ -34,6 +36,6 @@ public class ClubResult
     /// <returns>The clubresult</returns>
     public string GetResult(int simulations)
     {
-        return $"{ClubName} - {string.Join(", ", _results.Select(r => $"{r.Key}: {r.Value}"))} - {Math.Round((double)_totalPoints / simulations, 2)} pts avg";
+        return $"{ClubName} ({Rating})- {string.Join(", ", _results.Select(r => $"{r.Key}: {r.Value}"))} - {Math.Round((double)_totalPoints / simulations, 2)} pts avg";
     }
 }
