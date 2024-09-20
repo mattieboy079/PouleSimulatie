@@ -25,7 +25,7 @@ public class StandRow
     /// </summary>
     /// <param name="goalsFor">Goals scored in the match</param>
     /// <param name="goalsAgainst">Goalc received in the match</param>
-    public void MatchPlayed(int goalsFor, int goalsAgainst)
+    public void MatchPlayedAnimated(int goalsFor, int goalsAgainst)
     {
         if(PointsToAdd != null)
             AddValues();
@@ -39,6 +39,19 @@ public class StandRow
             PointsToAdd = 0;
         else
             PointsToAdd = 1;
+    }
+
+    public void MatchPlayed(int goalsFor, int goalsAgainst)
+    {
+        GoalsFor += goalsFor;
+        GoalsAgainst += goalsAgainst;
+        
+        if(goalsFor > goalsAgainst)
+            Won++;
+        else if(goalsFor < goalsAgainst)
+            Lost++;
+        else
+            Drawn++;
     }
     
     /// <summary>
@@ -92,6 +105,7 @@ public class StandRow
             default:
                 throw new ArgumentOutOfRangeException();
         }
+        
         GoalsFor += GoalsForToAdd!.Value;
         GoalsAgainst += GoalsAgainstToAdd!.Value;
         PointsToAdd = null;

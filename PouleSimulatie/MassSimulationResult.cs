@@ -2,7 +2,8 @@ namespace PouleSimulatie;
 
 public class MassSimulationResult
 {
-    private List<ClubResult> ClubResults { get; set; }
+    public double TimeTaken { get; private set; }
+    private List<ClubResult> ClubResults { get; }
 
     public MassSimulationResult(IReadOnlyList<Club> clubs)
     {
@@ -28,5 +29,10 @@ public class MassSimulationResult
     public string GetResults(int simulations)
     {
         return string.Join("\n", ClubResults.Select(c => c.GetResult(simulations)));
+    }
+
+    public void SetTime(double timeTaken)
+    {
+        TimeTaken = timeTaken;
     }
 }

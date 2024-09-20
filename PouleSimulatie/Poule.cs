@@ -224,7 +224,7 @@ public class Poule
         if (nextMatch == null)
             return;
         
-        SimulateMatch(nextMatch);
+        SimulateMatch(nextMatch, true);
     }
 
     /// <summary>
@@ -232,30 +232,42 @@ public class Poule
     /// </summary>
     public void SimulateAllMatches()
     {
-        Parallel.ForEach(_matches.Where(m => !m.IsPlayed), SimulateMatch);
+        Parallel.ForEach(_matches.Where(m => !m.IsPlayed), m => SimulateMatch(m, false));
+        foreach (var standRow in Stand)
+            standRow.AddValues();
     }
 
     /// <summary>
     /// Simulate a given match and update the stand
     /// </summary>
     /// <param name="match">The match to simulate</param>
-    private void SimulateMatch(Match match)
+    /// <param name="animatedScore">whether the results should be animated</param>
+    private void SimulateMatch(Match match, bool animatedScore)
     {
         match.Simulate(_random);
-        UpdateStand(match);
+        UpdateStand(match, animatedScore);
     }
-    
+
     /// <summary>
     /// Update the stand based on the result of a playedMatch
     /// </summary>
     /// <param name="playedMatch">The played playedMatch</param>
-    private void UpdateStand(Match playedMatch)
+    /// <param name="animatedScore">Whether the results should be prepared for animation</param>
+    private void UpdateStand(Match playedMatch, bool animatedScore)
     {
         var homeStand = Stand.First(s => s.Club == playedMatch.HomeClub);
         var awayStand = Stand.First(s => s.Club == playedMatch.AwayClub);
-        
-        homeStand.MatchPlayed(playedMatch.HomeGoals, playedMatch.AwayGoals);
-        awayStand.MatchPlayed(playedMatch.AwayGoals, playedMatch.HomeGoals);
+
+        if (animatedScore)
+        {
+            homeStand.MatchPlayedAnimated(playedMatch.HomeGoals, playedMatch.AwayGoals);
+            awayStand.MatchPlayedAnimated(playedMatch.AwayGoals, playedMatch.HomeGoals);
+        }
+        else
+        {
+            homeStand.MatchPlayed(playedMatch.HomeGoals, playedMatch.AwayGoals);
+            awayStand.MatchPlayed(playedMatch.AwayGoals, playedMatch.HomeGoals);
+        }
     }
 
     /// <summary>

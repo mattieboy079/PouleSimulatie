@@ -50,6 +50,7 @@
 			label1 = new Label();
 			label2 = new Label();
 			label3 = new Label();
+			pbSimulateThousand = new ProgressBar();
 			((System.ComponentModel.ISupportInitialize)NumAtt).BeginInit();
 			((System.ComponentModel.ISupportInitialize)NumMid).BeginInit();
 			((System.ComponentModel.ISupportInitialize)NumDef).BeginInit();
@@ -248,11 +249,22 @@
 			label3.TabIndex = 36;
 			label3.Text = "Increase att and def";
 			// 
+			// pbSimulateThousand
+			// 
+			pbSimulateThousand.Location = new Point(12, 299);
+			pbSimulateThousand.Maximum = 1;
+			pbSimulateThousand.Name = "pbSimulateThousand";
+			pbSimulateThousand.Size = new Size(241, 23);
+			pbSimulateThousand.Step = 1;
+			pbSimulateThousand.TabIndex = 37;
+			pbSimulateThousand.Visible = false;
+			// 
 			// MainForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(800, 450);
+			Controls.Add(pbSimulateThousand);
 			Controls.Add(label3);
 			Controls.Add(label2);
 			Controls.Add(label1);
@@ -309,5 +321,6 @@
 		private Label label1;
 		private Label label2;
 		private Label label3;
+		private ProgressBar pbSimulateThousand;
 	}
 }

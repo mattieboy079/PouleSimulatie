@@ -110,37 +110,28 @@ public partial class MainForm : Form
 	
 	private void BtnSimulateThousand_Click(object sender, EventArgs e)
 	{
-		var startTime = DateTime.Now;
-		
-		if (_clubService.Clubs.Count < 2)
-		{
-			MessageBox.Show("Voeg minimaal 2 teams toe.");
-			return;
-		}
-
-		var returns = CheckReturns.Checked;
-		
 		var simulations = 1000000;
-		var random = new Random();
-		var tasks = new List<Task>();
+		pbSimulateThousand.Visible = true;
+		pbSimulateThousand.Value = 0;
+		pbSimulateThousand.Maximum = simulations;
+		var simulationService = new MassSimulationService(_clubService.Clubs, CheckReturns.Checked);
+		var task = simulationService.Simulate(simulations);
 
-		var simulationResult = new MassSimulationResult(_clubService.Clubs);
-
-		for (int p = 0; p < simulations; p++)
+		while (!task.IsCompleted)
 		{
-			tasks.Add(Task.Run(() =>
-			{
-				Poule poule = new(_clubService.Clubs, returns, random);
-				poule.Init();
-				poule.SimulateAllMatches();
-				simulationResult.AddResults(poule);
-			}));
+			var progress = simulationService.GetProgress();
+			pbSimulateThousand.Value = progress;
+			Application.DoEvents();
+			Task.Delay(50).GetAwaiter().GetResult();
 		}
-		
-		Task.WhenAll(tasks).GetAwaiter().GetResult();
 
-		var timeTaken = Math.Round((DateTime.Now - startTime).TotalSeconds, 3);
+		var result = task.Result;
 		
-		MessageBox.Show($"Time: {timeTaken}\n{simulationResult.GetResults(simulations)}");
+		if (result == null)
+			return;
+
+		pbSimulateThousand.Visible = false;
+
+		MessageBox.Show($"Time: {result.TimeTaken}\n{result.GetResults(simulations)}");
 	}
 }
