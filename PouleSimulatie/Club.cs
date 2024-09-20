@@ -3,16 +3,16 @@ namespace PouleSimulatie;
 public class Club
 {
     public string Name { get; }
-    public int Attack { get; }
-    public int Midfield { get; }
-    public int Defence { get; }
+    private int _attack { get; }
+    private int _midfield { get; }
+    private int _defence { get; }
 
     public Club(string name, int attack, int midfield, int defence)
     {
         Name = name;
-        Attack = attack;
-        Midfield = midfield;
-        Defence = defence;
+        _attack = attack;
+        _midfield = midfield;
+        _defence = defence;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class Club
     /// <returns>The average rating</returns>
     public int GetRating()
     {
-        return (Attack + Midfield + Defence) / 3;
+        return (_attack + _midfield + _defence) / 3;
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public class Club
     /// <returns>The attacking rating</returns>
     public double GetAttackRating()
     {
-        return (double)(2 * Attack + Midfield) / 3;
+        return (double)(2 * _attack + _midfield) / 3;
     }
     
     /// <summary>
@@ -39,6 +39,15 @@ public class Club
     /// <returns>The defending rating</returns>
     public double GetDefendRating()
     {
-        return (double)(2 * Defence + Midfield) / 3;
+        return (double)(2 * _defence + _midfield) / 3;
+    }
+
+    /// <summary>
+    /// Get the information string of the club
+    /// </summary>
+    /// <returns>The information string</returns>
+    public override string ToString()
+    {
+        return $"{Name} - A:{_attack} M:{_midfield} D:{_defence}";
     }
 }

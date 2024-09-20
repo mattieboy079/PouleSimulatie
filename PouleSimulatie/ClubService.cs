@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Data;
 
 namespace PouleSimulatie;
@@ -8,21 +9,25 @@ public class ClubService
     public IReadOnlyList<Club> Clubs => _clubs.AsReadOnly();
 
     /// <summary>
-    /// Try to add a club to the list of clubs
+    /// Try to create a club and return it
     /// </summary>
-    /// <param name="club">The club to add</param>
-    /// <returns>true if addition was succesful</returns>
-    public bool AddClub(Club club)
+    /// <param name="clubName">The name for the club</param>
+    /// <param name="attack">The attack rating</param>
+    /// <param name="midfield">The midfield rating</param>
+    /// <param name="defence">The defence rating</param>
+    /// <returns>The club when creation was succesful</returns>
+    /// <exception cref="DuplicateNameException">When the clubname already exists</exception>
+    public Club TryCreatingClub(string clubName, decimal attack, decimal midfield, decimal defence)
     {
-        if (_clubs.Any(c => c.Name == club.Name))
-        {
-            MessageBox.Show("Deze club bestaat al.");
-            return false;
-        }
-     
+        if (Clubs.Any(c => c.Name == clubName))
+            throw new DuplicateNameException("Deze club bestaat al.");
+		
+        var club = new Club(clubName, (int)attack, (int)midfield, (int)defence);
+
         _clubs.Add(club);
-        return true;
+        return club;
     }
+
 
     /// <summary>
     /// Try to remove a club from the list of clubs
@@ -38,14 +43,23 @@ public class ClubService
         return true;
     }
 
-    public Club TryCreatingClub(string clubName, decimal attack, decimal midfield, decimal defence)
+    /// <summary>
+    /// Create a list of random clubs
+    /// </summary>
+    /// <param name="amount">Amount of clubs to create</param>
+    /// <returns>The created clubs</returns>
+    public IEnumerable<Club> CreateRandomClubs(int amount)
     {
-        if (Clubs.Any(c => c.Name == clubName))
-            throw new DuplicateNameException("Deze club bestaat al.");
-		
-        var club = new Club(clubName, (int)attack, (int)midfield, (int)defence);
-
-        _clubs.Add(club);
-        return club;
+        var random = new Random();
+        for (int i = 0; amount > 0; i++)
+        {
+            if(Clubs.Any(c => c.Name == $"Club {i + 1}"))
+                continue;
+            
+            var min = 1;
+            var max = 99;
+            yield return new Club($"Club {i + 1}", random.Next(min, max), random.Next(min, max), random.Next(min, max));
+            amount--;
+        }
     }
 }

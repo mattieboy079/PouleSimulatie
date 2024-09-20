@@ -17,7 +17,7 @@ public partial class MainForm : Form
 	/// <param name="club">The created club</param>
 	private void ClubCreated(Club club)
 	{
-		ListTeams.Items.Add($"{club.Name} - A:{club.Attack} M:{club.Midfield} D:{club.Defence}");
+		ListTeams.Items.Add(club.ToString());
 		if(ListTeams.Items.Count > 1)
 			NumAdvancingTeams.Maximum = ListTeams.Items.Count - 1;
 	}
@@ -27,14 +27,8 @@ public partial class MainForm : Form
 	private void MainForm_Load(object sender, EventArgs e)
 	{
 		ListTeams.Items.Clear();
-		var random = new Random();
-		for (var c = 0; c < 4; c++)
-		{
-			var min = c * 25;
-			var max = min + 24;
-			var club = new Club($"Club {c + 1}", random.Next(min, max), random.Next(min, max), random.Next(min, max));
-			ClubCreated(club);
-		}
+		foreach (var club in _clubService.CreateRandomClubs(4))
+			ListTeams.Items.Add(club.ToString());
 		NumAtt.Text = "";
 		NumMid.Text = "";
 		NumDef.Text = "";
