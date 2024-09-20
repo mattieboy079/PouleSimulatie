@@ -18,7 +18,7 @@ public partial class PouleForm : Form
 	private Dictionary<string, double> _clubRowSize;
 	private Dictionary<string, int> _lastDrawnOrder;
 
-	public PouleForm(List<Club> clubs, bool returns, int teamsAdvancing)
+	public PouleForm(IReadOnlyList<Club> clubs, bool returns, int teamsAdvancing)
 	{
 		_teamsAdvancing = teamsAdvancing;
 		DoubleBuffered = true;

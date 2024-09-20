@@ -2,7 +2,7 @@ namespace PouleSimulatie;
 
 public class Poule
 {
-    public List<Club> Clubs { get; }
+    public IReadOnlyList<Club> Clubs { get; }
     private List<Match> _matches { get; set; }
     public List<StandRow> Stand { get; private set; }
     private Random _random { get; }
@@ -15,7 +15,7 @@ public class Poule
     /// <param name="clubs">The clubs or teams that </param>
     /// <param name="returns">Whether the teams will have home and away matches against eachother</param>
     /// <param name="random">A randomizer object to avoid all simulations have the same seeded randomizer object</param>
-    public Poule(List<Club> clubs, bool returns, Random random)
+    public Poule(IReadOnlyList<Club> clubs, bool returns, Random random)
     {
         Clubs = clubs;
         Stand = Clubs.Select(c => new StandRow(c)).ToList();

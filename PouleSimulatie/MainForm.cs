@@ -2,7 +2,7 @@ namespace PouleSimulatie;
 
 public partial class MainForm : Form
 {
-	private readonly List<Club> _clubs = new();
+	private ClubService _clubService = new();
 	
 	public MainForm()
 	{
@@ -40,7 +40,7 @@ public partial class MainForm : Form
 		}
 		
 		var clubName = TxtClubname.Text;
-		if (_clubs.Any(c => c.Name == clubName))
+		if (_clubService.Clubs.Any(c => c.Name == clubName))
 		{
 			MessageBox.Show("Deze club bestaat al.");
 			return;
@@ -64,7 +64,8 @@ public partial class MainForm : Form
 	/// <param name="club">The created club</param>
 	private void ClubCreated(Club club)
 	{
-		_clubs.Add(club);
+		if (!_clubService.AddClub(club)) return;
+		
 		ListTeams.Items.Add($"{club.Name} - A:{club.Attack} M:{club.Midfield} D:{club.Defence}");
 		if(ListTeams.Items.Count > 1)
 			NumAdvancingTeams.Maximum = ListTeams.Items.Count - 1;
@@ -75,18 +76,18 @@ public partial class MainForm : Form
 		if (ListTeams.SelectedItems.Count > 0)
 		{
 			var rowsToRemove = ListTeams.SelectedItems.Cast<string>().ToList();
+			var clubNames = rowsToRemove.Select(row => row.Split(" - ").First());
 			foreach (var row in rowsToRemove)
 			{
 				var clubName = row.Split(" - ").First();
-				var club = _clubs.First(c => c.Name == clubName);
-				_clubs.Remove(club);
+				if (!_clubService.RemoveClub(clubName)) continue;
+				
 				ListTeams.Items.Remove(row);
-				if (ListTeams.Items.Count > 1)
-				{
-					NumAdvancingTeams.Maximum--;
-					if (NumAdvancingTeams.Value > NumAdvancingTeams.Maximum)
-						NumAdvancingTeams.Value = NumAdvancingTeams.Maximum;
-				}
+				if (ListTeams.Items.Count < 2) continue;
+				
+				NumAdvancingTeams.Maximum--;
+				if (NumAdvancingTeams.Value > NumAdvancingTeams.Maximum)
+					NumAdvancingTeams.Value = NumAdvancingTeams.Maximum;
 			}
 		}
 		else
@@ -97,13 +98,13 @@ public partial class MainForm : Form
 	
 	private void BtnStart_Click(object sender, EventArgs e)
 	{
-		if (_clubs.Count < 2)
+		if (_clubService.Clubs.Count < 2)
 		{
 			MessageBox.Show("Voeg minimaal 2 teams toe.");
 			return;
 		}
 		
-		var form = new PouleForm(_clubs, CheckReturns.Checked, (int)NumAdvancingTeams.Value);
+		var form = new PouleForm(_clubService.Clubs, CheckReturns.Checked, (int)NumAdvancingTeams.Value);
 		form.Show();
 	}
 	
@@ -111,7 +112,7 @@ public partial class MainForm : Form
 	{
 		var startTime = DateTime.Now;
 		
-		if (_clubs.Count < 2)
+		if (_clubService.Clubs.Count < 2)
 		{
 			MessageBox.Show("Voeg minimaal 2 teams toe.");
 			return;
@@ -123,13 +124,13 @@ public partial class MainForm : Form
 		var random = new Random();
 		var tasks = new List<Task>();
 
-		var simulationResult = new MassSimulationResult(_clubs);
+		var simulationResult = new MassSimulationResult(_clubService.Clubs);
 
 		for (int p = 0; p < simulations; p++)
 		{
 			tasks.Add(Task.Run(() =>
 			{
-				Poule poule = new(_clubs, returns, random);
+				Poule poule = new(_clubService.Clubs, returns, random);
 				poule.Init();
 				poule.SimulateAllMatches();
 				simulationResult.AddResults(poule);

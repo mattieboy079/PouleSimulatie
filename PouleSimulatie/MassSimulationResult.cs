@@ -4,7 +4,7 @@ public class MassSimulationResult
 {
     private List<ClubResult> ClubResults { get; set; }
 
-    public MassSimulationResult(List<Club> clubs)
+    public MassSimulationResult(IReadOnlyList<Club> clubs)
     {
         ClubResults = clubs.Select(c => new ClubResult(c, clubs.Count)).ToList();
     }
