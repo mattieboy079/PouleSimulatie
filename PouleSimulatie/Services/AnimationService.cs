@@ -57,7 +57,7 @@ public class AnimationService : IAnimationService
 	{
 		_rowHeight = Math.Min(30, rect.Height / (_poule.Clubs.Count + 1));
 		
-		double baseFontSize = _rowHeight / 2;
+		double baseFontSize = Math.Max(1, _rowHeight / 2);
 		var font = new Font("Arial", (float)baseFontSize, FontStyle.Regular);
 		var brush = new SolidBrush(Color.Black);
 		var pen = new Pen(Color.Black, 1);
@@ -72,11 +72,11 @@ public class AnimationService : IAnimationService
 		graphics.DrawRectangle(pen, headerRect);
         graphics.DrawString("#", font, brush, headerRect with { Width = (int)(NumberWidth * headerRect.Width) }, format);
         graphics.DrawString("Club", font, brush, headerRect with { X = headerRect.X + (int)(NumberWidth * headerRect.Width), Width = (int)(StringWidth * headerRect.Width) }, format);
-        graphics.DrawString("Pts", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
-        graphics.DrawString("P", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 2) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
-        graphics.DrawString("W", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 3) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
-        graphics.DrawString("D", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 4) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
-        graphics.DrawString("L", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 5) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("Points", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("Played", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 2) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("Win", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 3) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("Draw", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 4) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
+        graphics.DrawString("Loss", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 5) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
         graphics.DrawString("+/-", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 6) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
         graphics.DrawString("+", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 7) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
         graphics.DrawString("-", font, brush, headerRect with { X = headerRect.X + (int)((StringWidth + NumberWidth * 8) * headerRect.Width), Width = (int)(NumberWidth * headerRect.Width) }, format);
@@ -278,7 +278,7 @@ public class AnimationService : IAnimationService
 	/// <param name="format">The stringformat for drawing strings</param>
 	private void DrawTableRow(Graphics graphics, StandRow row, Rectangle rect, Color color, int pos, StringFormat format)
 	{
-		double baseFontSize = rect.Height / 2;
+		double baseFontSize = Math.Max(1, rect.Height / 2);
 		var textHeight = rect.Y + rect.Height * .15;
 
 		var addValueYAdjust = baseFontSize / 2 * (_addValueSizeFactor - 1);

@@ -41,12 +41,10 @@ public class Poule
     private void CreateMatches()
     {
         var clubs = Clubs.OrderBy(_ => _random.Next()).ToArray();
-        int rondes;
 
-        if (clubs.Length % 2 == 1)
-            rondes = clubs.Length;
-        else
-            rondes = clubs.Length - 1;
+        var rondes = clubs.Length % 2 == 1
+            ? clubs.Length
+            : clubs.Length - 1;
 
         TotalRondes = rondes;
         if (_returns)

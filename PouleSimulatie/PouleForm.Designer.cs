@@ -74,6 +74,7 @@
 			BtnPrevious.TabIndex = 3;
 			BtnPrevious.Text = "Vorige speelronde";
 			BtnPrevious.UseVisualStyleBackColor = true;
+			BtnPrevious.Enabled = false;
 			BtnPrevious.Click += BtnPrevious_Click;
 			// 
 			// BtnNext

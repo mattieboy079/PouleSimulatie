@@ -27,6 +27,15 @@ public partial class PouleForm : Form
 		Refresh();
 	}
 	
+	private void ChangeRound(int round)
+	{
+		_currentRound = round;
+		LblPlayround.Text = $"{_currentRound}/{_poule.TotalRondes}";
+		BtnPrevious.Enabled = _currentRound > 1;
+		BtnNext.Enabled = _currentRound < _poule.TotalRondes;
+		Refresh();
+	}
+	
 	#region EventHandlers
 
 	/// <summary>
@@ -36,7 +45,6 @@ public partial class PouleForm : Form
 	{
 		var graphics = e.Graphics;
 
-		LblPlayround.Text = $"{_currentRound}/{_poule.TotalRondes}";
 		var matches = _poule.GetMatches(_currentRound);
 		_animationService.DrawPlayRound(graphics, matches);
 		_animationService.DrawStand(graphics, new Rectangle(380, 110, Size.Width - 410, Size.Height - 170));
@@ -63,7 +71,7 @@ public partial class PouleForm : Form
 			return;
 		}
 
-		_currentRound = nextRound.Value;
+		ChangeRound(nextRound.Value);
 		_poule.SimulateNextMatch();
 		_animationService.AnimatePointsGained();
 		Refresh();
@@ -85,7 +93,7 @@ public partial class PouleForm : Form
 	private void BtnPrevious_Click(object sender, EventArgs e)
 	{
 		if(_currentRound > 1)
-			_currentRound--;
+			ChangeRound(_currentRound - 1);
 		
 		Refresh();
 	}
@@ -96,7 +104,7 @@ public partial class PouleForm : Form
 	private void BtnNext_Click(object sender, EventArgs e)
 	{
 		if(_currentRound < _poule.TotalRondes)
-			_currentRound++;
+			ChangeRound(_currentRound + 1);
 		
 		Refresh();
 	}

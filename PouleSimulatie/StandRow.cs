@@ -9,10 +9,25 @@ public class StandRow
     public int GoalsFor { get; private set; }
     public int GoalsAgainst { get; private set; }
     
-    // Properties for animation
+    /// <summary>
+    /// Used in animation to add the points to the total points
+    /// And determine if the club gets a win, draw or loss
+    /// </summary>
     public int? PointsToAdd { get; private set; }
+    
+    /// <summary>
+    /// Used in animation to create the goal difference animation and add the goals to the total goalsFor
+    /// </summary>
     public int? GoalsForToAdd { get; private set; }
+    
+    /// <summary>
+    /// Used in animation to create the goal difference animation and add the goals to the total goalsAgainst
+    /// </summary>
     public int? GoalsAgainstToAdd { get; private set; }
+    
+    /// <summary>
+    /// Used to create the bouncing effect when the new results are added
+    /// </summary>
     public bool PointsAdded { get; private set; }
 
     public StandRow(Club club)
@@ -21,7 +36,7 @@ public class StandRow
     }
 
     /// <summary>
-    /// Add the results of a match to the club
+    /// Add the results of a match to the club with an animation using the ToAdd parameters
     /// </summary>
     /// <param name="goalsFor">Goals scored in the match</param>
     /// <param name="goalsAgainst">Goalc received in the match</param>
@@ -41,6 +56,11 @@ public class StandRow
             PointsToAdd = 1;
     }
 
+    /// <summary>
+    /// Add the results of a match to the club without an animation by directly assigning the results
+    /// </summary>
+    /// <param name="goalsFor">Goals scored in the match</param>
+    /// <param name="goalsAgainst">Goalc received in the match</param>
     public void MatchPlayed(int goalsFor, int goalsAgainst)
     {
         GoalsFor += goalsFor;
@@ -84,7 +104,7 @@ public class StandRow
     /// <summary>
     /// Add the values to add to the real values
     /// </summary>
-    /// <exception cref="ArgumentOutOfRangeException">Any number other than 3, 1 or 0 since this cannot determine a win loss or draw</exception>
+    /// <exception cref="ArgumentOutOfRangeException">If pointsToAdd has any number other than 3, 1 or 0 since this cannot determine a win loss or draw</exception>
     public void AddValues()
     {
         if (PointsToAdd == null)
@@ -115,7 +135,7 @@ public class StandRow
     }
 
     /// <summary>
-    /// Reset the values to default after animation
+    /// Reset the animation values to default after animation
     /// </summary>
     public void ResetSizing()
     {
