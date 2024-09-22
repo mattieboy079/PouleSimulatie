@@ -1,4 +1,6 @@
-﻿using PouleSimulatie.Services;
+﻿using PouleSimulatie.Interfaces;
+using PouleSimulatie.Objects;
+using PouleSimulatie.Services;
 
 namespace PouleSimulatie;
 
@@ -7,9 +9,10 @@ public partial class PouleForm : Form
 	private readonly Poule _poule;
 	private int _currentRound = 1;
 	private readonly IAnimationService _animationService;
-
-	public PouleForm(IReadOnlyList<Club> clubs, bool returns, int teamsAdvancing)
+	private IRenderer<DataTable> _tableRenderer;
+	public PouleForm(IReadOnlyList<Club> clubs, bool returns, int teamsAdvancing, IRenderer<DataTable> tableRenderer)
 	{
+		_tableRenderer = tableRenderer;
 		DoubleBuffered = true;
 		_poule = new Poule(clubs, returns, teamsAdvancing, new Random());
 		_animationService = new AnimationService(this, _poule);
@@ -45,9 +48,12 @@ public partial class PouleForm : Form
 	{
 		var graphics = e.Graphics;
 
-		var matches = _poule.GetMatches(_currentRound);
-		_animationService.DrawPlayRound(graphics, matches);
-		_animationService.DrawStand(graphics, new Rectangle(380, 110, Size.Width - 410, Size.Height - 170));
+		var matchTable = new MatchTable();
+		_poule.FillMatchTable(ref matchTable, _currentRound);
+		_animationService.DrawPlayRound(graphics, _tableRenderer, new Rectangle(12, 110, 356, Size.Height - 170), matchTable);
+		var standTable = new StandTable();
+		_poule.FillStandTable(ref standTable);
+		_animationService.DrawStand(graphics, _tableRenderer, new Rectangle(380, 110, Size.Width - 410, Size.Height - 170), standTable);
 	}
 	
 	/// <summary>
@@ -73,7 +79,7 @@ public partial class PouleForm : Form
 
 		ChangeRound(nextRound.Value);
 		_poule.SimulateNextMatch();
-		_animationService.AnimatePointsGained();
+		//_animationService.AnimatePointsGained();
 		Refresh();
 	}
 
@@ -83,7 +89,7 @@ public partial class PouleForm : Form
 	private void BtnSimulateAll_Click(object sender, EventArgs e)
 	{
 		_poule.SimulateAllMatches();
-		_animationService.AnimatePointsGained();
+		//_animationService.AnimatePointsGained();
 		Refresh();
 	}
 	

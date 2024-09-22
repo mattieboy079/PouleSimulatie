@@ -1,3 +1,5 @@
+using PouleSimulatie.Objects;
+
 namespace PouleSimulatie;
 
 public class Poule
@@ -225,7 +227,9 @@ public class Poule
         if (nextMatch == null)
             return;
         
-        SimulateMatch(nextMatch, true);
+        //TODO: Reimplement animation
+        //SimulateMatch(nextMatch, true);
+        SimulateMatch(nextMatch, false);
     }
 
     /// <summary>
@@ -278,5 +282,43 @@ public class Poule
     public int? GetNextMatchRound()
     {
         return _matches.FirstOrDefault(m => !m.IsPlayed)?.Round;
+    }
+
+    /// <summary>
+    /// Creates a datatable to draw with the current stand
+    /// </summary>
+    /// <returns>The datatable</returns>
+    public void FillStandTable(ref StandTable dataTable)
+    {
+        var orderedStand = GetOrderedStand();
+        for (var i = 0; i < orderedStand.Count; i++)
+        {
+            var row = new DataRow();
+            dataTable.Rows.Add(row);
+            dataTable.AddValue(row, "#", (i + 1).ToString());
+            dataTable.AddValue(row, "Club", orderedStand[i].Club.Name);
+            dataTable.AddValue(row, "Points", orderedStand[i].GetPoints().ToString());
+            dataTable.AddValue(row, "Played", orderedStand[i].GetPlayed().ToString());
+            dataTable.AddValue(row, "Win", orderedStand[i].Wins.ToString());
+            dataTable.AddValue(row, "Draw", orderedStand[i].Draws.ToString());
+            dataTable.AddValue(row, "Loss", orderedStand[i].Losses.ToString());
+            dataTable.AddValue(row, "+/-", orderedStand[i].GetGoalDiff().ToString());
+            dataTable.AddValue(row, "+", orderedStand[i].GoalsFor.ToString());
+            dataTable.AddValue(row, "-", orderedStand[i].GoalsAgainst.ToString());
+            dataTable.AddValue(row, "Rating", orderedStand[i].Club.GetRating().ToString());
+        }
+    }
+
+    public void FillMatchTable(ref MatchTable matchTable, int currentRound)
+    {
+        var matches = GetMatches(currentRound);
+        foreach (var match in matches)
+        {
+            var row = new DataRow();
+            matchTable.Rows.Add(row);
+            matchTable.AddValue(row, "Home", match.HomeClub.Name);
+            matchTable.AddValue(row, "Away", match.AwayClub.Name);
+            matchTable.AddValue(row, "Result", match.IsPlayed ? $"{match.HomeGoals} - {match.AwayGoals}" : "");
+        }
     }
 }

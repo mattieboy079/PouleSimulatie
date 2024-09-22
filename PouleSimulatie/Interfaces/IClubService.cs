@@ -1,4 +1,4 @@
-namespace PouleSimulatie.Services;
+namespace PouleSimulatie.Interfaces;
 
 public interface IClubService
 {

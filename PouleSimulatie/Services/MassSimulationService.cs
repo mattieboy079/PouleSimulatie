@@ -1,4 +1,5 @@
-using PouleSimulatie.MassSimulation;
+using PouleSimulatie.Interfaces;
+using PouleSimulatie.Objects;
 
 namespace PouleSimulatie.Services;
 

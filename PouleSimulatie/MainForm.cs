@@ -1,4 +1,5 @@
 using System.Data;
+using PouleSimulatie.Interfaces;
 using PouleSimulatie.Services;
 
 namespace PouleSimulatie;
@@ -104,7 +105,7 @@ public partial class MainForm : Form
 			return;
 		}
 		
-		var form = new PouleForm(_clubService.Clubs, CheckReturns.Checked, (int)NumAdvancingTeams.Value);
+		var form = new PouleForm(_clubService.Clubs, CheckReturns.Checked, (int)NumAdvancingTeams.Value, new DataTableRendererService());
 		form.Show();
 	}
 	

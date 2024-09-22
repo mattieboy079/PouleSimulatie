@@ -1,4 +1,4 @@
-namespace PouleSimulatie.MassSimulation;
+namespace PouleSimulatie.Objects;
 
 public class MassSimulationResult
 {

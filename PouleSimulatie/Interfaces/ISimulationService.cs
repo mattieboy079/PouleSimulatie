@@ -1,6 +1,6 @@
-using PouleSimulatie.MassSimulation;
+using PouleSimulatie.Objects;
 
-namespace PouleSimulatie.Services;
+namespace PouleSimulatie.Interfaces;
 
 public interface ISimulationService
 {

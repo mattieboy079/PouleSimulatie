@@ -3,9 +3,9 @@ namespace PouleSimulatie;
 public class StandRow
 {
     public Club Club { get; }
-    public int Won { get; private set; }
-    public int Drawn { get; private set; }
-    public int Lost { get; private set; }
+    public int Wins { get; private set; }
+    public int Draws { get; private set; }
+    public int Losses { get; private set; }
     public int GoalsFor { get; private set; }
     public int GoalsAgainst { get; private set; }
     
@@ -67,11 +67,11 @@ public class StandRow
         GoalsAgainst += goalsAgainst;
         
         if(goalsFor > goalsAgainst)
-            Won++;
+            Wins++;
         else if(goalsFor < goalsAgainst)
-            Lost++;
+            Losses++;
         else
-            Drawn++;
+            Draws++;
     }
     
     /// <summary>
@@ -80,7 +80,7 @@ public class StandRow
     /// <returns>Amount of matches</returns>
     public int GetPlayed()
     {
-        return Won + Drawn + Lost;
+        return Wins + Draws + Losses;
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public class StandRow
     /// <returns>Amount of points</returns>
     public int GetPoints()
     {
-        return Won * 3 + Drawn;
+        return Wins * 3 + Draws;
     }
 
     /// <summary>
@@ -114,13 +114,13 @@ public class StandRow
         switch (pts)
         {
             case 3:
-                Won++;
+                Wins++;
                 break;
             case 1:
-                Drawn++;
+                Draws++;
                 break;
             case 0:
-                Lost++;
+                Losses++;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
