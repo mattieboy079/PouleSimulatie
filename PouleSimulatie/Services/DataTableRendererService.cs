@@ -25,10 +25,18 @@ public class DataTableRendererService : IRenderer<DataTable>
         
         var totalWidth = dataTable.Columns.Sum(c => c.Width);
         var widthPercentage = (double)rect.Width / totalWidth;
-        foreach (var column in dataTable.Columns)
+        if(Math.Abs(widthPercentage - 1) > 0.01)
         {
-            baseFontSize = Math.Max(1, baseFontSize * widthPercentage);
-            column.Width = (int)(column.Width * widthPercentage);
+            if (widthPercentage < 1)
+            {
+                baseFontSize = Math.Max(1, Math.Floor(baseFontSize * widthPercentage));
+                font = new Font("Arial", (float)baseFontSize, FontStyle.Regular);
+            }
+			
+            foreach (var column in dataTable.Columns)
+            {
+                column.Width = (int)(column.Width * widthPercentage);
+            }
         }
         
         // Draw header
@@ -45,14 +53,12 @@ public class DataTableRendererService : IRenderer<DataTable>
         for (var i = 0; i < dataTable.Rows.Count; i++)
         {
             var rowRect = rect with { Y = rect.Y + (i + 1) * _rowHeight, Height = _rowHeight };
-            DrawRow(graphics, rowRect, dataTable.Columns, dataTable.Rows[i]);
+            DrawRow(graphics, rowRect, dataTable.Columns, dataTable.Rows[i], font);
         }
     }
 
-    private void DrawRow(Graphics graphics, Rectangle rect, List<DataColumn> columns, DataRow row)
+    private void DrawRow(Graphics graphics, Rectangle rect, List<DataColumn> columns, DataRow row, Font font)
     {
-        double baseFontSize = Math.Max(1, rect.Height / 2);
-        var font = new Font("Arial", (float)baseFontSize, FontStyle.Regular);
         var brush = new SolidBrush(Color.Black);
         var pen = new Pen(Color.Black, 1);
         var format = new StringFormat { LineAlignment = StringAlignment.Center };
@@ -69,6 +75,6 @@ public class DataTableRendererService : IRenderer<DataTable>
     private float GetTextWidth(Graphics graphics, string text, Font font)
     {
         var size = graphics.MeasureString(text, font);
-        return size.Width;
+        return size.Width * 1.08f;
     }
 }
