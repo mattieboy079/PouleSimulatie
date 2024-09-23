@@ -34,6 +34,7 @@
 			BtnPrevious = new Button();
 			BtnNext = new Button();
 			LblPlayround = new Label();
+			LblTeamsAdvancing = new Label();
 			SuspendLayout();
 			// 
 			// BtnExit
@@ -68,13 +69,13 @@
 			// 
 			// BtnPrevious
 			// 
+			BtnPrevious.Enabled = false;
 			BtnPrevious.Location = new Point(12, 70);
 			BtnPrevious.Name = "BtnPrevious";
 			BtnPrevious.Size = new Size(132, 23);
 			BtnPrevious.TabIndex = 3;
 			BtnPrevious.Text = "Vorige speelronde";
 			BtnPrevious.UseVisualStyleBackColor = true;
-			BtnPrevious.Enabled = false;
 			BtnPrevious.Click += BtnPrevious_Click;
 			// 
 			// BtnNext
@@ -96,11 +97,21 @@
 			LblPlayround.TabIndex = 5;
 			LblPlayround.Text = "12/12";
 			// 
+			// LblTeamsAdvancing
+			// 
+			LblTeamsAdvancing.AutoSize = true;
+			LblTeamsAdvancing.Location = new Point(393, 74);
+			LblTeamsAdvancing.Name = "LblTeamsAdvancing";
+			LblTeamsAdvancing.Size = new Size(38, 15);
+			LblTeamsAdvancing.TabIndex = 6;
+			LblTeamsAdvancing.Text = "label1";
+			// 
 			// PouleForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(1200, 450);
+			Controls.Add(LblTeamsAdvancing);
 			Controls.Add(LblPlayround);
 			Controls.Add(BtnNext);
 			Controls.Add(BtnPrevious);
@@ -109,8 +120,8 @@
 			Controls.Add(BtnExit);
 			Name = "PouleForm";
 			Text = "PouleForm";
-			Paint += OnPaintHandler;
 			SizeChanged += SizeChangedHandler;
+			Paint += OnPaintHandler;
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -123,5 +134,6 @@
 		private Button BtnPrevious;
 		private Button BtnNext;
 		private Label LblPlayround;
+		private Label LblTeamsAdvancing;
 	}
 }

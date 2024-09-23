@@ -19,6 +19,7 @@ public partial class PouleForm : Form
 		_poule = new Poule(clubs, returns, teamsAdvancing, new Random());
 		InitializeComponent();
 		Init();
+		LblTeamsAdvancing.Text = $"{teamsAdvancing} {(teamsAdvancing == 1 ? "team gaat" : "teams gaan")} door naar de volgende ronde.";
 	}
 
 	/// <summary>
@@ -54,11 +55,12 @@ public partial class PouleForm : Form
 		var graphics = e.Graphics;
 
 		var matchTable = new MatchTable();
+		var startHeight = BtnPrevious.Location.Y + BtnPrevious.Size.Height + 10;
 		_poule.FillMatchTable(ref matchTable, _currentRound);
-		_tableRenderer.Draw(graphics, new Rectangle(12, 110, 356, Size.Height - 170), matchTable);
+		_tableRenderer.Draw(graphics, new Rectangle(12, startHeight, 356, Size.Height - 170), matchTable);
 		var standTable = new StandTable();
 		_poule.FillStandTable(ref standTable);
-		_tableAnimator.Draw(graphics, new Rectangle(380, 110, Size.Width - 410, Size.Height - 170), standTable);
+		_tableAnimator.Draw(graphics, new Rectangle(380, startHeight, Size.Width - 410, Size.Height - 170), standTable);
 	}
 	
 	/// <summary>
@@ -111,7 +113,7 @@ public partial class PouleForm : Form
 	/// </summary>
 	private void ShowAdvancingTeams()
 	{
-		MessageBox.Show("Alle wedstrijden zijn gespeeld! De teams die door gaan naar de volgende ronde zijn: " + string.Join(",", _poule.GetAdvancingTeams().Select(c => c.Name)));
+		MessageBox.Show("Alle wedstrijden zijn gespeeld! De teams die door gaan naar de volgende ronde zijn: " + string.Join(", ", _poule.GetAdvancingTeams().Select(c => c.Name)));
 	}
 	
 	/// <summary>
