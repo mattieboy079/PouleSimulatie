@@ -88,6 +88,9 @@ public partial class PouleForm : Form
 		_poule.FillStandTable(ref standTable);
 		_tableAnimator.OrderTable(standTable, Refresh);
 		Refresh();
+
+		if (_poule.GetNextMatchRound() == null)
+			ShowAdvancingTeams();
 	}
 
 	/// <summary>
@@ -100,6 +103,15 @@ public partial class PouleForm : Form
 		_poule.FillStandTable(ref standTable);
 		_tableAnimator.OrderTable(standTable, Refresh);
 		Refresh();
+		ShowAdvancingTeams();
+	}
+
+	/// <summary>
+	/// Show a message box with the advancing teams
+	/// </summary>
+	private void ShowAdvancingTeams()
+	{
+		MessageBox.Show("Alle wedstrijden zijn gespeeld! De teams die door gaan naar de volgende ronde zijn: " + string.Join(",", _poule.GetAdvancingTeams().Select(c => c.Name)));
 	}
 	
 	/// <summary>

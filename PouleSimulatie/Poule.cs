@@ -4,13 +4,13 @@ namespace PouleSimulatie;
 
 public class Poule
 {
-    public int TeamsAdvancing { get; }
-    public IReadOnlyList<Club> Clubs { get; }
-    private List<Match> _matches { get; set; }
-    public List<StandRow> Stand { get; private set; }
-    private Random _random { get; }
-    private bool _returns { get; }
     public int TotalRondes { get; private set; }
+    private readonly IReadOnlyList<Club> _clubs;
+    private List<Match> _matches;
+    private List<StandRow> _stand;
+    private readonly Random _random;
+    private readonly int _teamsAdvancing;
+    private readonly bool _returns;
 
     /// <summary>
     /// Create a new poule
@@ -21,9 +21,9 @@ public class Poule
     /// <param name="random">A randomizer object to avoid all simulations have the same seeded randomizer object</param>
     public Poule(IReadOnlyList<Club> clubs, bool returns, int teamsAdvancing, Random random)
     {
-        TeamsAdvancing = teamsAdvancing;
-        Clubs = clubs;
-        Stand = Clubs.Select(c => new StandRow(c)).ToList();
+        _teamsAdvancing = teamsAdvancing;
+        _clubs = clubs;
+        _stand = _clubs.Select(c => new StandRow(c)).ToList();
         _returns = returns;
         _random = random;
         _matches = new List<Match>();
@@ -42,7 +42,7 @@ public class Poule
     /// </summary>
     private void CreateMatches()
     {
-        var clubs = Clubs.OrderBy(_ => _random.Next()).ToArray();
+        var clubs = _clubs.OrderBy(_ => _random.Next()).ToArray();
 
         var rondes = clubs.Length % 2 == 1
             ? clubs.Length
@@ -154,13 +154,13 @@ public class Poule
     /// <returns>The ordered stand</returns>
     public List<StandRow> GetOrderedStand()
     {
-        Stand = Stand
+        _stand = _stand
             .OrderByDescending(s => s.GetPoints())
             .ThenByDescending(s => s.GetGoalDiff())
             .ThenByDescending(s => s.GoalsFor)
             .ThenByDescending(s => s.Club, Comparer<Club>.Create(GetHeadToHeadResult))
             .ToList();
-        return Stand;
+        return _stand;
     }
 
     /// <summary>
@@ -255,8 +255,8 @@ public class Poule
     /// <param name="playedMatch">The played playedMatch</param>
     private void UpdateStand(Match playedMatch)
     {
-        var homeStand = Stand.First(s => s.Club == playedMatch.HomeClub);
-        var awayStand = Stand.First(s => s.Club == playedMatch.AwayClub);
+        var homeStand = _stand.First(s => s.Club == playedMatch.HomeClub);
+        var awayStand = _stand.First(s => s.Club == playedMatch.AwayClub);
 
         homeStand.MatchPlayed(playedMatch.HomeGoals, playedMatch.AwayGoals);
         awayStand.MatchPlayed(playedMatch.AwayGoals, playedMatch.HomeGoals);
@@ -265,7 +265,7 @@ public class Poule
     /// <summary>
     /// Get the first round with matches that are not played yet
     /// </summary>
-    /// <returns>The roundnumber, null means all matches have been played</returns>
+    /// <returns>The round number, null means all matches have been played</returns>
     public int? GetNextMatchRound()
     {
         return _matches.FirstOrDefault(m => !m.IsPlayed)?.Round;
@@ -307,5 +307,10 @@ public class Poule
             matchTable.AddValue(row, "Away", match.AwayClub.Name);
             matchTable.AddValue(row, "Result", match.IsPlayed ? $"{match.HomeGoals} - {match.AwayGoals}" : "");
         }
+    }
+
+    public IEnumerable<Club> GetAdvancingTeams()
+    {
+        return GetOrderedStand().Take(_teamsAdvancing).Select(s => s.Club);
     }
 }

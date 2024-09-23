@@ -13,6 +13,7 @@ public partial class MassSimulationResultForm : Form
 		_result = result;
 		_tableRenderer = tableRenderer;
 		InitializeComponent();
+		LblTime.Text = $"Time Taken: {Math.Round(_result.GetTimeTaken(), 3)}";
 	}
 
 	private void BtnSluiten_Click(object sender, EventArgs e)
@@ -24,6 +25,6 @@ public partial class MassSimulationResultForm : Form
 	{
 		var table = new MassSimulationResultTable(_result.GetClubAmount());
 		_result.FillMassSimulationTable(ref table);
-		_tableRenderer.Draw(e.Graphics, new Rectangle(12, 50, Size.Width - 50, Size.Height - 110), table);
+		_tableRenderer.Draw(e.Graphics, new Rectangle(12, 70, Size.Width - 50, Size.Height - 110), table);
 	}
 }

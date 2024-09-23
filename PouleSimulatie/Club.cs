@@ -3,9 +3,9 @@ namespace PouleSimulatie;
 public class Club
 {
     public string Name { get; }
-    private int _attack { get; }
-    private int _midfield { get; }
-    private int _defence { get; }
+    private readonly int _attack;
+    private readonly int _midfield;
+    private readonly int _defence;
 
     public Club(string name, int attack, int midfield, int defence)
     {

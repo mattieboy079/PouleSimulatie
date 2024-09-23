@@ -3,7 +3,6 @@ namespace PouleSimulatie.Objects;
 public class MassSimulationResult
 {
     private double _timeTaken;
-    private int _simulations;
     private readonly List<ClubResult> _clubResults;
 
     public MassSimulationResult(IReadOnlyList<Club> clubs)
@@ -26,11 +25,9 @@ public class MassSimulationResult
     /// Set the time taken and the amount of simulations finished
     /// </summary>
     /// <param name="timeTaken">The time the simulation took</param>
-    /// <param name="simulationsFinished">The amount of simulations finished</param>
-    public void SetTimeAndSimulationAmount(double timeTaken, int simulationsFinished)
+    public void SetTimeAndSimulationAmount(double timeTaken)
     {
         _timeTaken = timeTaken;
-        _simulations = simulationsFinished;
     }
 
     /// <summary>
