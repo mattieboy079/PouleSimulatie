@@ -129,8 +129,9 @@ public partial class MainForm : Form
 		
 		if (result == null)
 			return;
-		
-		MessageBox.Show($"Time: {result.TimeTaken}\n{result.GetResults(simulations)}");
+
+		var massSimulationForm = new MassSimulationResultForm(result, new DataTableRendererService());
+		massSimulationForm.ShowDialog();
 		pbSimulateThousand.Visible = false;
 	}
 

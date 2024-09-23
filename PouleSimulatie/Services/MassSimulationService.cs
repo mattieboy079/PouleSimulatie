@@ -38,7 +38,7 @@ public class MassSimulationService : ISimulationService
 
         var timeTaken = Math.Round((DateTime.Now - startTime).TotalSeconds, 3);
 
-        simulationResult.SetTime(timeTaken);
+        simulationResult.SetTimeAndSimulationAmount(timeTaken, _simulationsFinished);
 
         return simulationResult;
     }

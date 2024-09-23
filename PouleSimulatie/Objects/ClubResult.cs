@@ -1,16 +1,18 @@
+using System.Globalization;
+
 namespace PouleSimulatie.Objects;
 
 public class ClubResult
 {
     public readonly string ClubName;
-    public readonly int Rating;
+    private readonly int _rating;
     private readonly Dictionary<int, int> _results;
-    private int _totalPoints;
+    public int TotalPoints { get; private set; }
 	
     public ClubResult(Club club, int clubsCount)
     {
         ClubName = club.Name;
-        Rating = club.GetRating();
+        _rating = club.GetRating();
         _results = new();
         for (int i = 1; i <= clubsCount; i++)
         {
@@ -26,16 +28,22 @@ public class ClubResult
     public void AddResult(int position, int points)
     {
         _results[position]++;
-        _totalPoints += points;
+        TotalPoints += points;
     }
 
-    /// <summary>
-    /// Get the result of a club
-    /// </summary>
-    /// <param name="simulations">amount of simulations ran</param>
-    /// <returns>The clubresult</returns>
-    public string GetResult(int simulations)
+    private double GetAveragePoints()
     {
-        return $"{ClubName} ({Rating}) - {string.Join(", ", _results.Select(r => $"{r.Key}: {r.Value}"))} - {Math.Round((double)_totalPoints / simulations, 2)} pts avg";
+        return Math.Round((double)TotalPoints / _results.Values.Sum(v => v), 2);
+    }
+
+    public void FillRow(MassSimulationResultTable dataTable, DataRow row)
+    {
+        dataTable.AddValue(row, "Club", ClubName);
+        dataTable.AddValue(row, "Rating", _rating.ToString());
+        dataTable.AddValue(row, "Average Points", GetAveragePoints().ToString(CultureInfo.CurrentCulture));
+        foreach (var kvp in _results)
+        {
+            dataTable.AddValue(row, $"Placed {kvp.Key}", kvp.Value.ToString());
+        }
     }
 }
