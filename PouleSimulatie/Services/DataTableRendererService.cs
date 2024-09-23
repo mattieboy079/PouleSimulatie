@@ -49,7 +49,7 @@ public class DataTableRendererService : IRenderer<DataTable>
         }
     }
 
-    public void DrawRow(Graphics graphics, Rectangle rect, List<DataColumn> columns, DataRow row)
+    private void DrawRow(Graphics graphics, Rectangle rect, List<DataColumn> columns, DataRow row)
     {
         double baseFontSize = Math.Max(1, rect.Height / 2);
         var font = new Font("Arial", (float)baseFontSize, FontStyle.Regular);

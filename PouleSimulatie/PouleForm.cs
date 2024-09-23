@@ -1,21 +1,22 @@
 ﻿using PouleSimulatie.Interfaces;
 using PouleSimulatie.Objects;
-using PouleSimulatie.Services;
 
 namespace PouleSimulatie;
 
 public partial class PouleForm : Form
 {
+	private readonly ITableAnimatorService _tableAnimator;
+	private readonly IRenderer<DataTable> _tableRenderer;
 	private readonly Poule _poule;
 	private int _currentRound = 1;
-	private readonly IAnimationService _animationService;
-	private IRenderer<DataTable> _tableRenderer;
-	public PouleForm(IReadOnlyList<Club> clubs, bool returns, int teamsAdvancing, IRenderer<DataTable> tableRenderer)
+	
+	public PouleForm(IReadOnlyList<Club> clubs, bool returns, int teamsAdvancing, IRenderer<DataTable> tableRenderer, ITableAnimatorService tableAnimator)
 	{
+		_tableAnimator = tableAnimator;
 		_tableRenderer = tableRenderer;
+		
 		DoubleBuffered = true;
 		_poule = new Poule(clubs, returns, teamsAdvancing, new Random());
-		_animationService = new AnimationService(this, _poule);
 		InitializeComponent();
 		Init();
 	}
@@ -30,6 +31,10 @@ public partial class PouleForm : Form
 		Refresh();
 	}
 	
+	/// <summary>
+	/// Change the round to show of the poule
+	/// </summary>
+	/// <param name="round">The round to show</param>
 	private void ChangeRound(int round)
 	{
 		_currentRound = round;
@@ -50,10 +55,10 @@ public partial class PouleForm : Form
 
 		var matchTable = new MatchTable();
 		_poule.FillMatchTable(ref matchTable, _currentRound);
-		_animationService.DrawPlayRound(graphics, _tableRenderer, new Rectangle(12, 110, 356, Size.Height - 170), matchTable);
+		_tableRenderer.Draw(graphics, new Rectangle(12, 110, 356, Size.Height - 170), matchTable);
 		var standTable = new StandTable();
 		_poule.FillStandTable(ref standTable);
-		_animationService.DrawStand(graphics, _tableRenderer, new Rectangle(380, 110, Size.Width - 410, Size.Height - 170), standTable);
+		_tableAnimator.Draw(graphics, new Rectangle(380, 110, Size.Width - 410, Size.Height - 170), standTable);
 	}
 	
 	/// <summary>
@@ -79,7 +84,9 @@ public partial class PouleForm : Form
 
 		ChangeRound(nextRound.Value);
 		_poule.SimulateNextMatch();
-		//_animationService.AnimatePointsGained();
+		var standTable = new StandTable();
+		_poule.FillStandTable(ref standTable);
+		_tableAnimator.OrderTable(standTable, Refresh);
 		Refresh();
 	}
 
@@ -89,7 +96,9 @@ public partial class PouleForm : Form
 	private void BtnSimulateAll_Click(object sender, EventArgs e)
 	{
 		_poule.SimulateAllMatches();
-		//_animationService.AnimatePointsGained();
+		var standTable = new StandTable();
+		_poule.FillStandTable(ref standTable);
+		_tableAnimator.OrderTable(standTable, Refresh);
 		Refresh();
 	}
 	
@@ -122,7 +131,6 @@ public partial class PouleForm : Form
 	{
 		Close();
 	}
-
-
+	
 	#endregion
 }

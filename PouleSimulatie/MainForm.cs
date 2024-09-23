@@ -105,7 +105,7 @@ public partial class MainForm : Form
 			return;
 		}
 		
-		var form = new PouleForm(_clubService.Clubs, CheckReturns.Checked, (int)NumAdvancingTeams.Value, new DataTableRendererService());
+		var form = new PouleForm(_clubService.Clubs, CheckReturns.Checked, (int)NumAdvancingTeams.Value, new DataTableRendererService(), new AnimatedDataTableRendererService(_clubService.Clubs));
 		form.Show();
 	}
 	
